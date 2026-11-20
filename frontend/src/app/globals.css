@@ -385,3 +385,71 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--deep); outline-
 .ss-inline-editor {position:static;box-shadow:none;min-width:235px;margin-top:12px}
 .ss-invoice-paper .ss-badge-success {color:#065f46}
 .ss-invoice-paper .ss-badge-danger {color:#9f1239}
+
+
+/* SmartStay shared semantic interaction tokens (2026-11-20).
+   Keep brand teal for navigation; reserve green for approvals and red for rejection,
+   cancellation and destructive changes. Pair status colors with text and icons. */
+:root {
+  --ss-positive:#047857; --ss-positive-hover:#065f46; --ss-positive-contrast:#ffffff;
+  --ss-positive-text:#065f46; --ss-positive-soft:#ecfdf5; --ss-positive-border:#a7f3d0;
+  --ss-negative:#be123c; --ss-negative-hover:#9f1239; --ss-negative-contrast:#ffffff;
+  --ss-negative-text:#9f1239; --ss-negative-soft:#fff1f2; --ss-negative-border:#fecdd3;
+  --ss-attention-text:#92400e; --ss-attention-soft:#fffbeb; --ss-attention-border:#fcd34d;
+}
+:root[data-theme="dark"] {
+  --ss-positive:#34d399; --ss-positive-hover:#6ee7b7; --ss-positive-contrast:#10131a;
+  --ss-positive-text:#a7f3d0; --ss-positive-soft:rgba(52,211,153,.13); --ss-positive-border:rgba(52,211,153,.35);
+  --ss-negative:#fda4af; --ss-negative-hover:#fecdd3; --ss-negative-contrast:#10131a;
+  --ss-negative-text:#fda4af; --ss-negative-soft:rgba(251,113,133,.13); --ss-negative-border:rgba(251,113,133,.40);
+  --ss-attention-text:#fcd34d; --ss-attention-soft:rgba(251,191,36,.11); --ss-attention-border:rgba(251,191,36,.35);
+}
+.ss-btn-success {
+  background:var(--ss-positive);color:var(--ss-positive-contrast);
+  border-color:var(--ss-positive);
+}
+.ss-btn-success:hover {background:var(--ss-positive-hover);border-color:var(--ss-positive-hover)}
+.ss-btn-danger {
+  background:var(--ss-negative);color:var(--ss-negative-contrast);
+  border-color:var(--ss-negative);
+}
+.ss-btn-danger:hover {background:var(--ss-negative-hover);border-color:var(--ss-negative-hover)}
+.ss-btn-danger-soft,.ss-small-danger {
+  background:var(--ss-negative-soft);color:var(--ss-negative-text);
+  border:1px solid var(--ss-negative-border);border-radius:8px;
+  padding:8px 11px;display:inline-flex;align-items:center;justify-content:center;
+  min-height:33px;gap:6px;font-size:11px;font-weight:800;cursor:pointer;
+}
+.ss-btn-danger-soft:hover,.ss-small-danger:hover {background:var(--ss-negative-border);text-decoration:none}
+.ss-btn-success:focus-visible,.ss-btn-danger:focus-visible,
+.ss-btn-danger-soft:focus-visible,.ss-small-danger:focus-visible {
+  outline:3px solid var(--ss-aqua);outline-offset:3px
+}
+.ss-btn-success:disabled,.ss-btn-danger:disabled,
+.ss-btn-danger-soft:disabled,.ss-small-danger:disabled {opacity:.5;cursor:not-allowed}
+.ss-badge-success {color:var(--ss-positive-text);background:var(--ss-positive-soft);border-color:var(--ss-positive-border)}
+.ss-badge-danger {color:var(--ss-negative-text);background:var(--ss-negative-soft);border-color:var(--ss-negative-border)}
+.ss-badge-warning {color:var(--ss-attention-text);background:var(--ss-attention-soft);border-color:var(--ss-attention-border)}
+.ss-feedback-success {color:var(--ss-positive-text);background:var(--ss-positive-soft);border-color:var(--ss-positive-border)}
+.ss-feedback-danger {color:var(--ss-negative-text);background:var(--ss-negative-soft);border-color:var(--ss-negative-border)}
+.ss-feedback-neutral {color:var(--ink);background:var(--glass);border:1px solid var(--edge)}
+.ss-metric-positive .ss-metric-top svg,.ss-metric-positive .ss-metric-value {color:var(--ss-positive-text)}
+.ss-metric-danger .ss-metric-top svg,.ss-metric-danger .ss-metric-value {color:var(--ss-negative-text)}
+.ss-action-group {display:flex;align-items:center;justify-content:flex-start;gap:9px;flex-wrap:wrap}
+.ss-request-note {background:var(--ss-attention-soft);border:1px solid var(--ss-attention-border);color:var(--ss-attention-text);
+  border-radius:11px;padding:13px 16px;font-size:12px;line-height:1.7}
+.ss-request-note strong {font-weight:800}
+.ss-review-controls {display:grid;gap:8px;max-width:270px}
+.ss-review-controls form {display:grid;gap:7px}
+.ss-review-confirm {display:flex;gap:7px;align-items:flex-start;font-size:11px;color:var(--muted);line-height:1.5}
+.ss-review-confirm input {accent-color:var(--ss-positive);width:16px;height:16px;flex:none}
+.ss-review-controls input[type=text],.ss-review-controls textarea {width:100%;border:1px solid var(--ss-line);
+  background:var(--ss-paper);color:var(--ss-paper-text);border-radius:9px;padding:9px;font:inherit;font-size:11px}
+.ss-review-controls textarea {resize:vertical;min-height:57px}
+.ss-request-form {display:grid;gap:16px}
+.ss-request-form .ss-two-column {gap:14px}
+.ss-request-form .ss-btn {justify-self:start}
+.ss-request-status-link {font-size:12px;color:var(--deep);font-weight:800;text-decoration:underline}
+.ss-request-stay-header {display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ss-request-table {margin:18px 0}
+@media(max-width:640px){.ss-request-form .ss-two-column{grid-template-columns:1fr}}

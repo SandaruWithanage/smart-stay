@@ -1,4 +1,4 @@
-export type RouteKey = "overview" | "packages" | "availability" | "courseworkRules" | "workspace" | "accessControl" | "roomInventory" | "reservationLedger" | "deskBooking" | "myReservations";
+export type RouteKey = "overview" | "packages" | "availability" | "courseworkRules" | "workspace" | "accessControl" | "roomInventory" | "reservationLedger" | "deskBooking" | "myReservations" | "requestStay" | "myBookingRequests" | "bookingRequestQueue";
 
 export type NavigationItem = {
   id: string;
@@ -30,7 +30,10 @@ export const routeRegistry: Record<RouteKey, string> = {
   roomInventory: "/admin/rooms",
   reservationLedger: "/admin/reservations",
   deskBooking: "/admin/reservations/new",
-  myReservations: "/my/reservations"
+  myReservations: "/my/reservations",
+  requestStay: "/booking-requests/new",
+  myBookingRequests: "/my/booking-requests",
+  bookingRequestQueue: "/admin/booking-requests"
 };
 
 export const publicPreviewManifest: UiManifest = {

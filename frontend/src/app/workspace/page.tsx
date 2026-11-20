@@ -25,6 +25,9 @@ export default async function WorkspacePage() {
         {permissions.has("reservation.read.any") && <PrimaryLink href="/admin/reservations"><CalendarDays size={16}/> Reservation ledger</PrimaryLink>}
         {permissions.has("reservation.create.any") && <PrimaryLink href="/admin/reservations/new">New desk reservation</PrimaryLink>}
         {permissions.has("reservation.read.own") && <PrimaryLink href="/my/reservations">My reservations</PrimaryLink>}
+        {permissions.has("booking_request.review") && <PrimaryLink href="/admin/booking-requests">Review booking requests</PrimaryLink>}
+        {permissions.has("booking_request.read.own") && <PrimaryLink href="/my/booking-requests">My booking requests</PrimaryLink>}
+        {permissions.has("booking_request.create.own") && <PrimaryLink href="/availability">Request a stay</PrimaryLink>}
         {permissions.has("room.availability.read") && <PrimaryLink href="/availability">Browse available rooms</PrimaryLink>}
         {permissions.has("access.manage") && <PrimaryLink href="/admin/access">Manage permissions</PrimaryLink>}
       </div>

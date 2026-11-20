@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, BedDouble, LockKeyhole } from "lucide-react";
+import { safeAfterAuthPath } from "@/lib/return-path";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -29,7 +30,7 @@ export default function LoginPage() {
         setError(body.error ?? "Login failed");
         return;
       }
-      router.replace("/workspace");
+      router.replace(safeAfterAuthPath(new URLSearchParams(window.location.search).get("next")));
       router.refresh();
     } catch {
       setError("Unable to connect to the application.");
@@ -65,7 +66,13 @@ export default function LoginPage() {
             {busy ? "Signing in..." : "Sign in"} <ArrowRight size={17}/>
           </button>
         </form>
-        <p className="auth-switch">New guest? <Link href="/register">Create an account</Link></p>
+        <p className="auth-switch">New guest? <Link href="/register" onClick={event => {
+          const next=safeAfterAuthPath(new URLSearchParams(window.location.search).get("next"));
+          if (next!=="/workspace") {
+            event.preventDefault();
+            router.push("/register?next="+encodeURIComponent(next));
+          }
+        }}>Create an account</Link></p>
         <Link className="auth-back" href="/">Back to room catalog</Link>
       </section>
     </main>

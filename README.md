@@ -59,6 +59,20 @@ The date-availability search does not reserve rooms. Final overlap and notice ch
 
 Design/reference mapping: `docs/UX-STITCH-REFERENCE.md`. Implementation status: `docs/IMPLEMENTATION_STATUS.md`.
 
+## Milestone 5: Booking requests and semantic action colors
+
+Guest requests now follow a staff-review queue instead of falsely recording online payment.
+A pending request does not reserve room inventory. Staff explicitly verify receipt of the
+LKR 10,000 advance before a green **Approve** action creates a confirmed reservation and invoice.
+
+- Guest: `/availability` → `/booking-requests/new` → `/my/booking-requests`.
+- Staff: `/admin/booking-requests` for green approval or red rejection with a mandatory reason.
+- Existing destructive actions (retire/cancel) remain red; routine search/save stays Aqua Frost teal.
+- Configurable navigation and database permissions are updated by Flyway V6.
+- Run `cd frontend && npm run test:ui` for semantic color/contrast tests.
+
+Details and unverified coursework assumptions: `docs/SEMANTIC-COLORS-AND-BOOKING-REQUESTS.md`.
+
 ## Available API
 
 | Method | Endpoint | Status |
@@ -81,3 +95,8 @@ Public catalog and room availability remain anonymously readable; authenticated 
 ## Coursework notes
 
 The university brief is marked draft. Room capacity, 48h vs two-calendar-day interpretation, check-in time, extra guest charging basis and taxation need lecturer confirmation. Record assumptions in `docs/ASSUMPTIONS.md` and keep your UML, tests, source listings and AI acknowledgement aligned to the final work.
+
+**Booking request APIs:** Authenticated `GET/POST /api/booking-requests`,
+`POST /api/booking-requests/{id}/withdraw`, and administrator
+`GET /api/admin/booking-requests`,
+`POST /api/admin/booking-requests/{id}/approve` or `/reject`.
