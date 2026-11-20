@@ -56,7 +56,7 @@ public class RoomManagementService {
         RoomEntity room = rooms.lockById(roomId)
             .orElseThrow(() -> new NotFoundException("Room not found"));
         LocalDate today = LocalDate.now(clock.withZone(TimeConfiguration.HOTEL_ZONE));
-        if (reservations.existsByRoom_IdAndStatusAndCheckOutGreaterThan(
+        if (reservations.hasUnfinishedBooking(
             roomId, ReservationStatus.CONFIRMED, today)) {
             throw new ConflictException("Room has an active or future reservation");
         }

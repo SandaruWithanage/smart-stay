@@ -16,12 +16,24 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     @Query("select b from ReservationEntity b where b.id = :id")
     Optional<ReservationEntity> lockById(@Param("id") UUID id);
 
-    boolean existsByRoom_IdAndStatusAndCheckInLessThanAndCheckOutGreaterThan(
-        String roomId, ReservationStatus status, LocalDate checkout, LocalDate checkin);
+    @Query("""
+      select case when count(b) > 0 then true else false end
+      from ReservationEntity b where b.room.id = :roomId and b.status = :status
+        and b.checkIn < :checkout and b.checkOut > :checkin
+      """)
+    boolean hasConflict(@Param("roomId") String roomId, @Param("status") ReservationStatus status,
+                        @Param("checkout") LocalDate checkout, @Param("checkin") LocalDate checkin);
 
-    boolean existsByRoom_IdAndStatusAndCheckOutGreaterThan(
-        String roomId, ReservationStatus status, LocalDate date);
+    @Query("""
+      select case when count(b) > 0 then true else false end
+      from ReservationEntity b where b.room.id = :roomId and b.status = :status
+        and b.checkOut > :date
+      """)
+    boolean hasUnfinishedBooking(@Param("roomId") String roomId,
+                                 @Param("status") ReservationStatus status,
+                                 @Param("date") LocalDate date);
 
-    List<ReservationEntity> findByCheckInOrderById(LocalDate checkIn);
+    @Query("select b from ReservationEntity b where b.checkIn = :checkIn order by b.id")
+    List<ReservationEntity> findByCheckInDate(@Param("checkIn") LocalDate checkIn);
     List<ReservationEntity> findByGuest_FullNameContainingIgnoreCase(String name);
 }

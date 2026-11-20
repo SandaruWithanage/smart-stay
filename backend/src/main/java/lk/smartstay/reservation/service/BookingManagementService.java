@@ -83,7 +83,7 @@ public class BookingManagementService {
         if (request.guestCount() <= 0) {
             throw new IllegalArgumentException("Guest count must be positive");
         }
-        if (bookings.existsByRoom_IdAndStatusAndCheckInLessThanAndCheckOutGreaterThan(
+        if (bookings.hasConflict(
             room.getId(), ReservationStatus.CONFIRMED, stay.checkOut(), stay.checkIn())) {
             throw new ConflictException("The room is reserved for an overlapping stay");
         }
@@ -139,7 +139,7 @@ public class BookingManagementService {
             return bookings.findByGuest_FullNameContainingIgnoreCase(guestName.trim())
                 .stream().map(ReservationView::from).toList();
         }
-        return bookings.findByCheckInOrderById(checkIn)
+        return bookings.findByCheckInDate(checkIn)
             .stream().map(ReservationView::from).toList();
     }
 }
