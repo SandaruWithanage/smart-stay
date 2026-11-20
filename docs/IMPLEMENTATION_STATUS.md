@@ -83,3 +83,11 @@ Remain: public-deployment hardening, payment gateway, lecturer decision approval
 - [x] Screenshot artifact stored in GitHub Actions for report selection (synthetic test data).
 - [x] Mobile availability page horizontal-overflow assertion added to Playwright smoke tests.
 - [ ] Confirm screenshots meet the final assessment's resolution/caption requirements and manually inspect the A4 print layout.
+
+## Milestone 10 — Keyboard and A4 print QA
+
+- [x] Skip link, focus-visible form fields, focus-managed mobile navigation and Escape closing.
+- [x] Browser assertions for drawer keyboard cycle/focus restoration and printer-only invoice layout.
+- [x] Real A4 PDF generated in CI from a synthetic guest's invoice.
+- [x] Guest reservation mobile-width document-overflow assertion.
+- [ ] Manually inspect the generated A4 PDF and review assistive-technology announcements.

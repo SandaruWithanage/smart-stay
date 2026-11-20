@@ -41,3 +41,29 @@ test("login uses keyboard-accessible inputs and no staff operations are public",
   await page.goto("/admin/rooms");
   await expect(page).toHaveURL(/\/login/);
 });
+
+test("keyboard skip link and mobile drawer focus return", async ({ page }, info) => {
+  await page.goto("/");
+  await page.keyboard.press("Tab");
+  const skip = page.getByRole("link", { name: "Skip to main content" });
+  await expect(skip).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#main-content")).toBeFocused();
+
+  if (info.project.name === "mobile-chromium") {
+    const opener = page.getByRole("button", { name: "Open menu" });
+    await opener.click();
+    await expect(opener).toHaveAttribute("aria-expanded", "true");
+    const drawer = page.getByRole("dialog", { name: "Main navigation" });
+    await expect(drawer).toBeVisible();
+    await expect(page.getByRole("button", { name: "Close menu" })).toBeFocused();
+    await page.keyboard.press("Shift+Tab");
+    await expect(drawer.locator("a").last()).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(page.getByRole("button", { name: "Close menu" })).toBeFocused();
+    await page.keyboard.press("Escape");
+    await expect(opener).toHaveAttribute("aria-expanded", "false");
+    await expect(opener).toBeFocused();
+    await expect(drawer).toBeHidden();
+  }
+});

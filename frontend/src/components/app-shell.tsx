@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { BedDouble, CalendarDays, ChevronLeft, Home, Menu, Moon, ShieldCheck, Sun, Search, LogIn, LogOut, X, Plus } from "lucide-react";
@@ -18,6 +18,9 @@ export default function AppShell({ children, manifest }: Props) {
   const [collapsed, setCollapsed] = useState(false);
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const sidebarRef = useRef<HTMLElement>(null);
   const navigation = visibleNavigation(manifest);
   const pathname = usePathname();
   const router = useRouter();
@@ -33,14 +36,50 @@ export default function AppShell({ children, manifest }: Props) {
     document.documentElement.dataset.theme = dark ? "dark" : "light";
   }, [dark]);
 
+  // Keyboard users should not be trapped behind a mobile navigation drawer.
+  // When opened, focus enters the drawer; Escape closes it and Tab stays inside.
+  useEffect(() => {
+    if (!open) return;
+    closeButtonRef.current?.focus();
+    const keyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setOpen(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = Array.from(sidebarRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not(:disabled), input:not(:disabled), [tabindex]:not([tabindex="-1"])'
+      ) ?? []).filter(el => el.getClientRects().length > 0);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", keyDown);
+    return () => {
+      document.removeEventListener("keydown", keyDown);
+      menuButtonRef.current?.focus();
+    };
+  }, [open]);
+
   return (
     <div className={`app-frame ${collapsed ? "sidebar-collapsed" : ""}`}>
+      <a className="ss-skip-link" href="#main-content">Skip to main content</a>
       {open && <button type="button" aria-label="Close menu overlay" className="mobile-overlay" onClick={() => setOpen(false)} />}
-      <aside className={`sidebar glass-panel ${open ? "sidebar-open" : ""}`} aria-label="Main navigation">
+      <aside id="smartstay-sidebar" ref={sidebarRef} className={`sidebar glass-panel ${open ? "sidebar-open" : ""}`}
+        aria-label="Main navigation" role={open ? "dialog" : undefined}
+        aria-modal={open ? true : undefined}>
         <div className="brand">
           <div className="brand-mark" aria-hidden="true"><BedDouble size={23} /></div>
           {!collapsed && <div><strong>SmartStay</strong><span>Hotel management</span></div>}
-          <button className="icon-btn mobile-close" aria-label="Close menu" type="button" onClick={() => setOpen(false)}><X size={18}/></button>
+          <button ref={closeButtonRef} className="icon-btn mobile-close" aria-label="Close menu" type="button" onClick={() => setOpen(false)}><X size={18}/></button>
         </div>
         <div className="sidebar-section-title">{collapsed ? "•••" : "WORKSPACE"}</div>
         <nav className="nav-list">
@@ -65,7 +104,7 @@ export default function AppShell({ children, manifest }: Props) {
       <div className="main-area">
         <header className="topbar glass-panel">
           <div className="topbar-leading">
-            <button type="button" className="icon-btn mobile-menu" aria-label="Open menu" onClick={() => setOpen(true)}><Menu size={20}/></button>
+            <button ref={menuButtonRef} type="button" className="icon-btn mobile-menu" aria-label="Open menu" aria-controls="smartstay-sidebar" aria-expanded={open} onClick={() => setOpen(true)}><Menu size={20}/></button>
             <div><span className="eyebrow">SMARTSTAY / WORKSPACE</span><div className="topbar-title">Welcome to SmartStay</div></div>
           </div>
           <div className="topbar-actions">
@@ -82,7 +121,7 @@ export default function AppShell({ children, manifest }: Props) {
             <div className="avatar" title={manifest.displayName} aria-hidden="true">SS</div>
           </div>
         </header>
-        <main id="main-content" className="main-content">{children}</main>
+        <main id="main-content" tabIndex={-1} className="main-content">{children}</main>
         <footer className="footer">SmartStay · Hotel booking coursework · Aqua Frost / Spatial Glass</footer>
       </div>
     </div>

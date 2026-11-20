@@ -37,3 +37,15 @@ The Playwright suite now captures **actual browser screenshots** from the isolat
 After the `browser-e2e` job succeeds, download the GitHub Actions artifact `smartstay-ui-screenshots-<commit>`. These screenshots are **not Stitch mockups**, and do not contain real hotel guests: CI uses generated synthetic test guest accounts and a temporary PostgreSQL database. They are valid execution evidence, but the author must still inspect and select legible images for the coursework document. Retention is 14 days.
 
 A separate mobile browser assertion checks the availability screen for page-level horizontal overflow. Broad screen-reader verification and final print screenshot inspection remain manual acceptance steps.
+
+## Milestone 10: Keyboard, mobile and A4 print regression checks
+
+- AppShell includes a visible-on-focus skip-to-content anchor, and the main content target accepts programmatic focus.
+- When the mobile menu opens, focus goes into its labelled dialog; Escape closes it, Tab/Shift+Tab cycle within the drawer, and focus returns to the menu trigger.
+- Focus rings cover links, buttons, inputs, selects, textareas and editable disclosure summaries. The offscreen mobile sidebar is not keyboard-focusable when closed.
+- Playwright covers these interactions on desktop and Pixel 7 Chromium.
+- The full browser test verifies the printed invoice hides sidebar and print controls, checks for clipped billing rows, and **generates an A4 PDF from the real app**.
+- `test-results/evidence/16-invoice-A4.pdf` is included with the actual-browser screenshots in the workflow UI-evidence artifact.
+- The guest reservation ledger is checked for document-level horizontal overflow at a 390px mobile width.
+
+These tests are automated smoke/regression coverage. Human review of the generated PDF pages, keyboard/screen-reader workflow, contrast and the final lecturer-required screenshots is still necessary.
