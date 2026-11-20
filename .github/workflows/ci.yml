@@ -26,6 +26,7 @@ jobs:
       DB_URL: jdbc:postgresql://localhost:5432/smartstay
       DB_USERNAME: smartstay
       DB_PASSWORD: test-only-password
+      SMARTSTAY_JWT_SECRET_BASE64: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
     defaults:
       run:
         working-directory: backend
