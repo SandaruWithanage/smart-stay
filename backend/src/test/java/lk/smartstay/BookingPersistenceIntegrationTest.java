@@ -36,12 +36,22 @@ class BookingPersistenceIntegrationTest {
     @Autowired BookingManagementService bookings;
     @Autowired lk.smartstay.reservation.service.ReservationModificationService modifications;
     @Autowired lk.smartstay.reservation.persistence.ReservationAmendmentRepository amendments;
+    @Autowired lk.smartstay.identity.service.IdentityService identities;
+    @Autowired lk.smartstay.identity.persistence.UserRepository accounts;
 
     private final LocalDate start = LocalDate.of(2030, 5, 10);
 
     private UUID createGuest() {
         return guests.register(new GuestRegistrationRequest(
             "P-" + UUID.randomUUID(), "Test Guest", "+94770001122", "test@example.org")).id();
+    }
+
+    private UUID createActor() {
+        String email="amend-actor-"+UUID.randomUUID()+"@example.org";
+        identities.register(new lk.smartstay.identity.api.RegistrationRequest(
+            "Amendment Test Actor","P-"+UUID.randomUUID(),"+94770001122",email,
+            "StrongTestPassword123!"));
+        return accounts.findByEmail(email).orElseThrow().getId();
     }
 
     private String createRoom(RoomOperationalStatus status) {
@@ -128,13 +138,14 @@ class BookingPersistenceIntegrationTest {
     @Test
     void amendmentRecalculatesInvoiceWithoutSecondAdvanceAndAppendsHistory() {
         UUID guest=createGuest();
+        UUID actor=createActor();
         String room=createRoom(RoomOperationalStatus.ACTIVE);
         var original=bookings.create(request(guest,room,start,start.plusDays(2),2));
         UUID id=original.reservation().bookingId();
         assertEquals(0,new BigDecimal("20160.00").compareTo(original.invoice().grossTotal()));
 
         var revised=modifications.change(id,new lk.smartstay.reservation.api.ReservationModifyRequest(
-            start,start.plusDays(5),3),UUID.randomUUID());
+            start,start.plusDays(5),3),actor);
 
         assertEquals(5,revised.invoice().nights());
         assertEquals(3,revised.reservation().guestCount());
@@ -147,7 +158,7 @@ class BookingPersistenceIntegrationTest {
         assertEquals(0,new BigDecimal("20160.00").compareTo(history.getFirst().previousGrossTotal()));
         assertEquals(0,new BigDecimal("52752.00").compareTo(history.getFirst().newGrossTotal()));
         modifications.change(id,new lk.smartstay.reservation.api.ReservationModifyRequest(
-            start,start.plusDays(5),3),UUID.randomUUID());
+            start,start.plusDays(5),3),actor);
         assertEquals(1,amendments.count());
     }
 
