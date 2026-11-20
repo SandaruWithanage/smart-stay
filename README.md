@@ -18,11 +18,15 @@ This branch supplies the initial project scaffold, publicly readable room-packag
 ## Get started
 
 1. Copy `.env.example` to `.env`. Never commit secrets.
-2. Start PostgreSQL: `docker compose up -d db`.
-3. Backend: `cd backend && mvn spring-boot:run` (JDK 21+, Maven 3.6.3+).
-4. Frontend: `cd frontend && npm install && npm run dev` (Node 22+).
-5. Browse `http://localhost:3000`. The public room-package API is `http://localhost:8080/api/public/room-packages`.
-6. Run backend tests: `cd backend && mvn test`. Frontend type check: `cd frontend && npm run typecheck`.
+2. Start PostgreSQL from the repository root: `docker compose up -d db`.
+3. Set the matching backend database password in your terminal (Spring Boot does **not** automatically load the root `.env`):
+   - **Windows PowerShell:** `$env:DB_PASSWORD="change-me-for-local-development"`
+   - **Bash:** `export DB_PASSWORD=change-me-for-local-development`
+   - Use the value actually configured in your local `.env`. `DB_URL` and `DB_USERNAME` default to the local database values.
+4. Backend: `cd backend` then `mvn spring-boot:run` (JDK 21+, Maven 3.6.3+).
+5. In a second terminal: `cd frontend` then `npm install` followed by `npm run dev` (Node 22+).
+6. Browse `http://localhost:3000`. The public package API is `http://localhost:8080/api/public/room-packages`.
+7. Run backend tests with PostgreSQL running and database variables set: `cd backend && mvn test`. Frontend type check: `cd frontend && npm run typecheck`.
 
 ## Coursework requirements
 
