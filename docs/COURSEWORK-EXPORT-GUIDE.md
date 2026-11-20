@@ -30,3 +30,7 @@ Run the Java/Next.js application and capture *real* working screen shots. The St
 
 ## Final hand-in
 Follow the **final moderated** brief for submission rules and deadline. The source draft describes a single report/document plus a separate ZIP, and warns that the diagram class names need a Kingston student-ID prefix. Do not submit the placeholder diagram, a standalone SRS, or a source ZIP alone as the full coursework response.
+
+## Automated GitHub Actions source archive
+
+Every CI run also executes the `coursework-exports` job. Once that job passes, open **Actions → SmartStay CI → the successful run → Artifacts** and download `smartstay-coursework-source-<commit SHA>`. The archive contains a clean source ZIP and generated Markdown code listings. These generated artifacts have a short retention period. They do **not** include the final student-specific report, screenshots or approved UML.
