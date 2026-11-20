@@ -9,9 +9,10 @@
 - [x] Pure Java stay interval, availability checking and booking timing rules.
 - [x] Pure Java `BigDecimal` pricing with discount, tax, advance and refund-due lines.
 - [x] JUnit tests for pricing and date boundaries.
+- [x] PostgreSQL-backed Spring context/migration integration test in CI.
 - [x] Next.js responsive Aqua Frost app shell, accessible menus/theme toggle, room-package cards.
 - [x] Typed safe route-key registry and permission-filtered **preview-only** navigation.
-- [x] GitHub CI workflow to build/test the backend and typecheck/build the frontend.
+- [x] GitHub CI workflow to test backend and database and typecheck/build frontend.
 
 ## Not yet implemented (do not present as delivered)
 
@@ -38,6 +39,6 @@
 ## Review gate
 
 - CI Maven tests and Next typecheck/build green.
-- PostgreSQL V1 migration runs on empty database.
+- PostgreSQL V1 migration runs on empty database and seeds official rates.
 - Documentation distinguishes explicit brief rules from assumptions.
 - No admin or customer-specific records exposed by unsecured APIs.
