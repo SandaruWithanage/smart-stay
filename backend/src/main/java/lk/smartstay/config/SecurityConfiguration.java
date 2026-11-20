@@ -32,6 +32,8 @@ public class SecurityConfiguration {
                 .requestMatchers("/api/admin/rooms", "/api/admin/rooms/**").authenticated()
                 .requestMatchers("/api/admin/access/**").authenticated()
                 .requestMatchers("/api/admin/reservations").authenticated()
+                .requestMatchers("/api/booking-requests", "/api/booking-requests/**").authenticated()
+                .requestMatchers("/api/admin/booking-requests", "/api/admin/booking-requests/**").authenticated()
                 .requestMatchers("/api/me/reservations").authenticated()
                 .requestMatchers("/api/reservations", "/api/reservations/**").authenticated()
                 .anyRequest().denyAll())

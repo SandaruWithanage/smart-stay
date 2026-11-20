@@ -32,3 +32,16 @@
 Admin must create room records first. Initial database has **no invented room inventory**; package catalog is seeded only. To see an existing guest's reservation in their private login, desk staff must use that user's linked guest ID. A separately registered desk guest has no automatic login linking yet.
 
 This is coursework-local development, not ready for public Internet hosting. See `docs/SECURITY-SETUP.md` and `docs/UX-STITCH-REFERENCE.md`.
+
+## Milestone 5 — Guest requests and semantic action colors (feature PR)
+
+- [x] Reusable semantic success/approval and danger/destructive buttons, badges and feedback in both themes.
+- [x] Aqua Frost and Spatial Glass color contrast tests and shared design tokens.
+- [x] Flyway V6 booking request records, approval audit fields, permission grants and navigation.
+- [x] Guest-request backend: submitted by current JWT identity, no payment or inventory lock.
+- [x] Staff approval: request row lock, same transactional booking engine, actual-advance confirmation.
+- [x] Staff rejection and own-request withdrawal without payment capture.
+- [x] Guest request form/history and staff review queue using shared UI components.
+- [x] Integration tests for cross-guest access, duplicate approval and request decisions.
+
+Remain: public-deployment hardening, payment gateway, lecturer decision approvals, browser E2E and the final graded UML/report.

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { AlertCircle, ArrowUpRight, CircleCheck, Inbox, Wrench } from "lucide-react";
+import { AlertCircle, ArrowUpRight, CircleCheck, CircleX, Inbox, Wrench } from "lucide-react";
 
 type SurfaceProps = { children: ReactNode; className?: string; solid?: boolean; id?: string };
 export function Surface({ children, className = "", solid = false, id }: SurfaceProps) {
@@ -40,13 +40,13 @@ export function MetricCard({ label, value, hint, icon }: {
 export type BadgeTone = "success" | "warning" | "danger" | "neutral";
 export function StatusBadge({ value, tone }: { value:string; tone?:BadgeTone }) {
   const color = tone ?? (
-    ["ACTIVE","AVAILABLE","CONFIRMED","SETTLED"].includes(value) ? "success"
-      : ["MAINTENANCE","CANCELLED","VOIDED"].includes(value) ? "danger"
+    ["ACTIVE","AVAILABLE","CONFIRMED","APPROVED","SETTLED"].includes(value) ? "success"
+      : ["MAINTENANCE","CANCELLED","REJECTED","RETIRED","VOIDED"].includes(value) ? "danger"
       : ["PENDING","RESERVED"].includes(value) ? "warning" : "neutral");
   const label = value.replaceAll("_"," ").toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
   return <span className={`ss-badge ss-badge-${color}`}>
     {color === "success" ? <CircleCheck size={13}/> :
-      color === "danger" ? <Wrench size={13}/> : <span className="ss-badge-dot"/>}
+      color === "danger" ? (value === "MAINTENANCE" ? <Wrench size={13}/> : <CircleX size={13}/>) : <span className="ss-badge-dot"/>}
     {label}
   </span>;
 }
@@ -61,18 +61,26 @@ export function EmptyState({ title, description, action }: {
 
 export function Feedback({ status }: { status?:string }) {
   if (!status) return null;
-  const good = ["saved","created","cancelled","retired"].includes(status);
-  const descriptions:Record<string,string> = {
-    saved:"Changes saved successfully.", created:"Record created successfully.",
-    cancelled:"Reservation cancelled. Any refundable advance is pending settlement.",
-    retired:"Room was safely retired.",
-    error:"The operation was not completed. Please review your data and try again.",
-    invalid:"Invalid or incomplete form values.", conflict:"A record conflict or booking restriction prevented the change.",
-    denied:"Permission denied."
+  const messages: Record<string, { text:string; tone:"success"|"danger"|"neutral" }> = {
+    saved:{text:"Changes saved successfully.",tone:"success"},
+    created:{text:"Record created successfully.",tone:"success"},
+    approved:{text:"Booking approved and confirmed after advance receipt.",tone:"success"},
+    requested:{text:"Request submitted. It is not yet a confirmed reservation.",tone:"success"},
+    cancelled:{text:"Reservation cancelled. Any refundable advance is pending settlement.",tone:"success"},
+    retired:{text:"Room was safely retired.",tone:"success"},
+    rejected:{text:"Request rejected. The guest can see the review decision.",tone:"danger"},
+    withdrawn:{text:"Pending request withdrawn. No room was reserved.",tone:"neutral"},
+    error:{text:"The operation was not completed. Please review the data and try again.",tone:"danger"},
+    invalid:{text:"Invalid or incomplete form values.",tone:"danger"},
+    conflict:{text:"A room conflict or booking restriction prevented the change.",tone:"danger"},
+    denied:{text:"Permission denied.",tone:"danger"}
   };
-  return <div role="status" className={`ss-feedback ${good?"ss-feedback-success":"ss-feedback-error"}`}>
-    {good?<CircleCheck size={17}/>:<AlertCircle size={17}/>}
-    {descriptions[status] ?? "Operation could not be completed."}
+  const message = messages[status];
+  if (!message) return null;
+  return <div role={message.tone === "danger" ? "alert" : "status"}
+    className={`ss-feedback ss-feedback-${message.tone}`}>
+    {message.tone === "danger" ? <CircleX size={17}/> : <CircleCheck size={17}/>}
+    {message.text}
   </div>;
 }
 

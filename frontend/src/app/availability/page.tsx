@@ -114,13 +114,16 @@ export default async function AvailabilityPage({
                 <h3>{labels[room.roomType]} · {room.id}</h3>
                 <p>{room.bedType.toLowerCase().replace(/^./, c => c.toUpperCase())} bed · Standard capacity {room.capacity} guests</p>
                 <div className="availability-price">LKR {amount(room.dailyRate)} <small>/ night, before adjustments</small></div>
-                <p>Reservations and payment handling will be enabled after JWT/ABAC checks are implemented.</p>
+                <p>Availability is rechecked when staff review your booking request. No payment is taken online.</p>
+                <Link className="ss-btn ss-btn-primary" href={`/booking-requests/new?${new URLSearchParams({
+                  roomId:room.id,checkIn:params.checkIn??"",checkOut:params.checkOut??""
+                })}`}>Request this stay</Link>
               </article>
             ))}
           </div>
         )}
       </section>
-      <div className="notice"><ShieldCheck size={19}/><span>This page is public and read-only. Booking actions, invoice records and guest information stay protected until authenticated access is implemented. Prices may change with discounts, extras and taxes.</span></div>
+      <div className="notice"><ShieldCheck size={19}/><span>Search results are public and read-only. Requesting a stay requires a guest login and does not reserve a room. Staff approvals recheck availability and require manual advance receipt. Prices may include taxes, discounts and extras.</span></div>
       <div className="availability-actions"><Link href="/" className="availability-back">Return to overview</Link></div>
     </AppShell>
   );

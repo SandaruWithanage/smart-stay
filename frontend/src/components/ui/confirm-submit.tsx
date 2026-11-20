@@ -2,20 +2,25 @@
 
 import { useFormStatus } from "react-dom";
 
-export function SubmitButton({ children, className="ss-btn ss-btn-primary" }: {
-  children: React.ReactNode; className?:string
+type ButtonTone = "primary" | "success" | "danger";
+
+export function SubmitButton({ children, className, tone = "primary" }: {
+  children: React.ReactNode; className?:string; tone?:ButtonTone
 }) {
   const { pending } = useFormStatus();
-  return <button type="submit" className={className} disabled={pending} aria-busy={pending}>
+  const style = className ?? `ss-btn ss-btn-${tone}`;
+  return <button type="submit" className={style} disabled={pending} aria-busy={pending}>
     {pending ? "Saving…" : children}
   </button>;
 }
 
-export function ConfirmSubmit({ children, message, className="ss-btn ss-btn-danger" }: {
-  children:React.ReactNode; message:string; className?:string
+/** Destructive operations always require a second intentional confirmation. */
+export function ConfirmSubmit({ children, message, className, tone = "danger" }: {
+  children:React.ReactNode; message:string; className?:string; tone?:ButtonTone
 }) {
   const { pending } = useFormStatus();
-  return <button className={className} type="submit" disabled={pending}
+  const style = className ?? `ss-btn ss-btn-${tone}`;
+  return <button className={style} type="submit" disabled={pending} aria-busy={pending}
     onClick={event => { if (!window.confirm(message)) event.preventDefault(); }}>
     {pending?"Working…":children}
   </button>;
