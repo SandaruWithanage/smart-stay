@@ -76,3 +76,10 @@ Remain: public-deployment hardening, payment gateway, lecturer decision approval
 - [ ] Capture and review genuine UI/code screenshots.
 - [ ] Integrate diagram, listings and observed test evidence in the final single report.
 - [ ] Confirm final moderated brief, due date, academic integrity statement and lecturer assumptions.
+
+## Milestone 9 — Browser screenshot evidence
+
+- [x] CI-generated real browser screenshots for light/dark public pages, mobile navigation, room inventory, guest booking requests, staff approval queue and invoices.
+- [x] Screenshot artifact stored in GitHub Actions for report selection (synthetic test data).
+- [x] Mobile availability page horizontal-overflow assertion added to Playwright smoke tests.
+- [ ] Confirm screenshots meet the final assessment's resolution/caption requirements and manually inspect the A4 print layout.

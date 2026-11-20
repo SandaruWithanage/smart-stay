@@ -29,3 +29,11 @@ The CI browser job provisions isolated ephemeral Postgres for each run. No real 
 ## Current outstanding QA
 
 Manual visual review and keyboard/screen-reader accessibility audit, mobile table overflow and A4 print-preview inspection remain separate release checks.
+
+## Real UI screenshots as CI evidence
+
+The Playwright suite now captures **actual browser screenshots** from the isolated test instance in both Aqua Frost and Spatial Glass. It collects public/catalog/login/mobile navigation, inventory, guest request, staff approval queue, invoice before and after modification, and reservation amendment screens.
+
+After the `browser-e2e` job succeeds, download the GitHub Actions artifact `smartstay-ui-screenshots-<commit>`. These screenshots are **not Stitch mockups**, and do not contain real hotel guests: CI uses generated synthetic test guest accounts and a temporary PostgreSQL database. They are valid execution evidence, but the author must still inspect and select legible images for the coursework document. Retention is 14 days.
+
+A separate mobile browser assertion checks the availability screen for page-level horizontal overflow. Broad screen-reader verification and final print screenshot inspection remain manual acceptance steps.

@@ -76,3 +76,7 @@ Run the exact test commands listed in the README and capture final GitHub Action
 - Deadline, identity format and source-code listing length
 
 **A passing CI build is not a substitute for lecturer decisions, manual testing, or final report author review.**
+
+## Automated screenshots now available
+
+A passing CI run attaches **real Playwright screenshots** as `smartstay-ui-screenshots-<commit>` under the workflow's Artifacts section. They show synthetic test data only. Prefer these to illustration mockups when gathering code/UI evidence. Examine them for fidelity, legibility and screen-reader/print issues before submission. Still capture any missing mandated UI states and report screenshots yourself, and use no live customer data.
