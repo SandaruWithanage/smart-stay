@@ -26,6 +26,9 @@ class AuthorizationHttpIntegrationTest {
     @Autowired UserRepository users;
     @Autowired AccessRepository access;
     @Autowired AccessManagementService policies;
+    @Autowired lk.smartstay.room.persistence.RoomRepository roomRepository;
+    @Autowired lk.smartstay.guest.persistence.GuestRepository guestRepository;
+    @Autowired lk.smartstay.reservation.service.BookingManagementService bookingService;
 
     private record Registered(String token, UUID guestId, UUID userId) { }
 
@@ -104,6 +107,33 @@ class AuthorizationHttpIntegrationTest {
               """)).andExpect(status().isForbidden());
 
         // Test transaction rolls back role updates and user changes.
+    }
+
+    @Test
+    void crossGuestReservationAndInvoiceAccessIsDenied() throws Exception {
+        Registered alice = register("Alice Reservation");
+        Registered bob = register("Bob Reservation");
+        var room = new lk.smartstay.room.persistence.RoomEntity(
+            "S-" + UUID.randomUUID().toString().substring(0, 8),
+            lk.smartstay.room.domain.RoomType.STANDARD,
+            lk.smartstay.room.domain.BedType.QUEEN, 2,
+            lk.smartstay.room.domain.RoomOperationalStatus.ACTIVE);
+        roomRepository.saveAndFlush(room);
+        var booking = bookingService.create(new lk.smartstay.reservation.api.ReservationCreateRequest(
+            bob.guestId(), room.getId(), lk.smartstay.room.domain.RoomType.STANDARD,
+            java.time.LocalDate.of(2030, 5, 10), java.time.LocalDate.of(2030, 5, 12),
+            2, true));
+        UUID bookingId = booking.reservation().bookingId();
+
+        mvc.perform(get("/api/reservations/" + bookingId)
+            .header("Authorization", "Bearer " + alice.token()))
+            .andExpect(status().isForbidden());
+        mvc.perform(get("/api/reservations/" + bookingId + "/invoice")
+            .header("Authorization", "Bearer " + alice.token()))
+            .andExpect(status().isForbidden());
+        mvc.perform(get("/api/reservations/" + bookingId)
+            .header("Authorization", "Bearer " + bob.token()))
+            .andExpect(status().isOk());
     }
 
     @Test

@@ -1,4 +1,4 @@
-export type RouteKey = "overview" | "packages" | "availability" | "courseworkRules";
+export type RouteKey = "overview" | "packages" | "availability" | "courseworkRules" | "workspace" | "accessControl";
 
 export type NavigationItem = {
   id: string;
@@ -7,12 +7,14 @@ export type NavigationItem = {
   iconKey: "home" | "rooms" | "search" | "rules";
   order: number;
   requiredPermission?: string;
+  enabled?: boolean;
 };
 
 export type UiManifest = {
   configurationVersion: number;
   displayName: string;
   mode: "public-preview" | "authenticated";
+  roleCodes?: string[];
   permissions: string[];
   navigation: NavigationItem[];
 };
@@ -22,7 +24,9 @@ export const routeRegistry: Record<RouteKey, string> = {
   overview: "/",
   packages: "/#packages",
   availability: "/availability",
-  courseworkRules: "/#rules"
+  courseworkRules: "/#rules",
+  workspace: "/workspace",
+  accessControl: "/admin/access"
 };
 
 export const publicPreviewManifest: UiManifest = {
@@ -41,7 +45,7 @@ export const publicPreviewManifest: UiManifest = {
 export function visibleNavigation(manifest: UiManifest): NavigationItem[] {
   const allowed = new Set(manifest.permissions);
   return manifest.navigation
-    .filter(item => item.routeKey in routeRegistry)
+    .filter(item => Object.hasOwn(routeRegistry, item.routeKey) && item.enabled !== false)
     .filter(item => !item.requiredPermission || allowed.has(item.requiredPermission))
     .sort((a, b) => a.order - b.order);
 }

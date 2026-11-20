@@ -37,6 +37,6 @@ public class UiManifestService {
                 || available.contains(item.requiredPermission())).toList();
         // No client authority to edit route names, JavaScript or component code.
         return new UiManifest(id, user.getDisplayName(), access.roles(id),
-            1, permissions, visible);
+            access.configurationVersion(), permissions, visible);
     }
 }

@@ -12,5 +12,5 @@ public record UiManifest(
     List<NavigationItem> navigation
 ) {
     public record NavigationItem(String id, String label, String routeKey, String iconKey,
-                                 int order, String requiredPermission) { }
+                                 int order, String requiredPermission, boolean enabled) { }
 }

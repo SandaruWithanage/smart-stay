@@ -48,6 +48,16 @@ public class AccessRepository {
         return Boolean.TRUE.equals(exists);
     }
 
+    public long configurationVersion() {
+        Long revision = jdbc.queryForObject(
+            "SELECT version FROM ui_configuration_revision WHERE id = 1", Long.class);
+        return revision == null ? 0L : revision;
+    }
+
+    public void incrementConfigurationVersion() {
+        jdbc.update("UPDATE ui_configuration_revision SET version = version + 1 WHERE id = 1");
+    }
+
     public void replaceRolePermissions(String role, List<String> grants) {
         jdbc.update("DELETE FROM role_permissions WHERE role_code = ?", role);
         for (String grant : grants) {

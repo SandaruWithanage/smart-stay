@@ -13,20 +13,20 @@ public class NavigationRepository {
 
     public List<NavigationItem> active() {
         return jdbc.query("""
-            SELECT id,label,route_key,icon_key,sort_order,required_permission
+            SELECT id,label,route_key,icon_key,sort_order,required_permission,enabled
             FROM navigation_items WHERE enabled = TRUE ORDER BY sort_order,id
             """, (rs, row) -> new NavigationItem(rs.getString("id"),
             rs.getString("label"), rs.getString("route_key"), rs.getString("icon_key"),
-            rs.getInt("sort_order"), rs.getString("required_permission")));
+            rs.getInt("sort_order"), rs.getString("required_permission"), rs.getBoolean("enabled")));
     }
 
     public List<NavigationItem> all() {
         return jdbc.query("""
-            SELECT id,label,route_key,icon_key,sort_order,required_permission
+            SELECT id,label,route_key,icon_key,sort_order,required_permission,enabled
             FROM navigation_items ORDER BY sort_order,id
             """, (rs, row) -> new NavigationItem(rs.getString("id"),
             rs.getString("label"), rs.getString("route_key"), rs.getString("icon_key"),
-            rs.getInt("sort_order"), rs.getString("required_permission")));
+            rs.getInt("sort_order"), rs.getString("required_permission"), rs.getBoolean("enabled")));
     }
 
     public int update(String key, String label, int order, boolean enabled) {

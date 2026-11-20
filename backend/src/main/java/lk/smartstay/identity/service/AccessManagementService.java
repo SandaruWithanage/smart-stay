@@ -43,6 +43,7 @@ public class AccessManagementService {
             throw new IllegalArgumentException("System permissions cannot be granted to GUEST");
         }
         access.replaceRolePermissions(role, grants.stream().sorted().toList());
+        access.incrementConfigurationVersion();
         return access.rolePermissions(role);
     }
 
@@ -51,5 +52,6 @@ public class AccessManagementService {
         if (navigation.update(id, request.label().trim(), request.order(), request.enabled()) != 1) {
             throw new NotFoundException("Navigation item not found");
         }
+        access.incrementConfigurationVersion();
     }
 }
