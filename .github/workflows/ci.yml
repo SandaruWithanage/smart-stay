@@ -133,6 +133,14 @@ jobs:
           done
           curl --fail http://127.0.0.1:3000/login > /dev/null
           cd frontend && npm run test:e2e
+      - name: Attach real UI screenshot evidence from browser tests
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smartstay-ui-screenshots-${{ github.sha }}
+          path: frontend/test-results/evidence/
+          if-no-files-found: warn
+          retention-days: 14
       - name: Upload failed browser traces
         if: failure()
         uses: actions/upload-artifact@v4
