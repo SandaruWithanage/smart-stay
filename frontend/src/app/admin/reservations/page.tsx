@@ -24,6 +24,7 @@ export default async function ReservationLedger({searchParams}:{searchParams:Pro
   const confirmed = (bookings ?? []).filter(b => b.status === "CONFIRMED").length;
   const cancelled = (bookings ?? []).filter(b => b.status === "CANCELLED").length;
   const mayCancel = manifest.permissions.includes("reservation.cancel.any");
+  const mayModify = manifest.permissions.includes("reservation.modify.any");
   const columns:Column<ReservationView>[] = [
     {key:"booking",label:"Booking reference",render:b=><Link className="ss-record-link" href={`/reservations/${b.bookingId}/invoice`}>{b.bookingId.slice(0,8).toUpperCase()}</Link>},
     {key:"guest",label:"Guest",render:b=><div><strong className="ss-table-strong">{b.guestName}</strong><small className="ss-cell-sub">{b.guestId.slice(0,8)}…</small></div>},
@@ -33,6 +34,8 @@ export default async function ReservationLedger({searchParams}:{searchParams:Pro
     {key:"advance",label:"Recorded advance",align:"right",render:b=><span className="ss-tabular">{lkr(b.recordedAdvance)}</span>},
     {key:"actions",label:"Actions",render:b=><div className="ss-row-actions">
       <Link href={`/reservations/${b.bookingId}/invoice`} className="ss-action-link">Invoice</Link>
+      {mayModify && b.status==="CONFIRMED" &&
+        <Link href={`/reservations/${b.bookingId}/modify`} className="ss-action-link">Modify</Link>}
       {mayCancel && b.status==="CONFIRMED" && <form action={cancelReservation}>
         <input type="hidden" name="bookingId" value={b.bookingId}/>
         <input type="hidden" name="source" value="admin"/>

@@ -75,6 +75,15 @@ test("real guest request -> staff approval -> confirmed invoice", async ({ page 
   await page.locator("tr").filter({hasText: roomId}).getByRole("link", { name: "View invoice" }).click();
   await expect(page.locator(".ss-invoice-paper")).toBeVisible();
   await expect(page.getByText(roomId).first()).toBeVisible();
+  // Amend a confirmed stay without charging a second advance.
+  await page.goto("/my/reservations");
+  await page.locator("tr").filter({hasText:roomId}).getByRole("link",{name:"Modify stay"}).click();
+  await expect(page.getByRole("heading",{name:"Modify reservation"})).toBeVisible();
+  await page.locator("#checkOut").fill("2030-09-15");
+  await page.getByRole("button",{name:"Save reservation changes"}).click();
+  await expect(page).toHaveURL(/\/invoice\?updated=1/);
+  await expect(page.getByText("5 night(s) booked")).toBeVisible();
+
   await page.emulateMedia({media:"print"});
   await expect(page.locator(".ss-invoice-paper")).toBeVisible();
 });

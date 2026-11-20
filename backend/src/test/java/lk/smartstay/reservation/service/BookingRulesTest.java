@@ -27,4 +27,13 @@ class BookingRulesTest {
             BookingRules.requireCancellationAllowed(
                 ReservationStatus.CONFIRMED, checkIn.minusHours(23), checkIn));
     }
+    @Test void modificationCutoffUsesOriginalCheckIn() {
+        assertDoesNotThrow(()->BookingRules.requireModificationAllowed(
+            ReservationStatus.CONFIRMED,checkIn.minusHours(25),checkIn));
+        assertThrows(IllegalArgumentException.class,()->BookingRules.requireModificationAllowed(
+            ReservationStatus.CONFIRMED,checkIn.minusHours(23),checkIn));
+        assertThrows(IllegalArgumentException.class,()->BookingRules.requireModificationAllowed(
+            ReservationStatus.CANCELLED,checkIn.minusHours(30),checkIn));
+    }
 }
+

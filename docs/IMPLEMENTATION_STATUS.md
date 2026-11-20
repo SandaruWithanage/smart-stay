@@ -54,3 +54,13 @@ Remain: public-deployment hardening, payment gateway, lecturer decision approval
 - [x] Real PostgreSQL-backed guest-to-staff booking-request and invoice journey tested in Chromium.
 - [x] A4 print-media invoice visibility is exercised.
 - [ ] Additional manual accessibility and visual-regression checks.
+
+## Milestone 7 — Reservation amendments (proposed feature)
+
+- [x] Role-scoped, ownership-protected same-room reservation editing.
+- [x] Provisional 24-hour original check-in cutoff; 48-hour notice for new check-in date.
+- [x] Transactional room/booking locking and overlap revalidation.
+- [x] Invoice recalculation with original advance preserved; append-only before/after history.
+- [x] Shared reusable React modification form and staff/guest edit links.
+- [x] Java domain, persistence and HTTP coverage for cutoff, money, conflicts and ownership.
+- [ ] Lecturer confirmation of editable scope, time and refund treatment.

@@ -92,6 +92,17 @@ public class ReservationEntity {
         refundStatus = RefundStatus.PENDING;
     }
 
+    public void reschedule(StayPeriod newStay,int newGuestCount) {
+        if (status != ReservationStatus.CONFIRMED) {
+            throw new IllegalArgumentException("Only confirmed reservations may be modified");
+        }
+        Objects.requireNonNull(newStay);
+        if (newGuestCount <= 0) throw new IllegalArgumentException("Guest count must be positive");
+        checkIn=newStay.checkIn();
+        checkOut=newStay.checkOut();
+        guestCount=newGuestCount;
+    }
+
     public UUID getId() { return id; }
     public GuestEntity getGuest() { return guest; }
     public RoomEntity getRoom() { return room; }

@@ -34,6 +34,8 @@ class BookingPersistenceIntegrationTest {
     @Autowired RoomManagementService rooms;
     @Autowired RoomAvailabilityService availability;
     @Autowired BookingManagementService bookings;
+    @Autowired lk.smartstay.reservation.service.ReservationModificationService modifications;
+    @Autowired lk.smartstay.reservation.persistence.ReservationAmendmentRepository amendments;
 
     private final LocalDate start = LocalDate.of(2030, 5, 10);
 
@@ -121,6 +123,56 @@ class BookingPersistenceIntegrationTest {
         String room = createRoom(RoomOperationalStatus.ACTIVE);
         bookings.create(request(guest, room, start, start.plusDays(2), 2));
         assertThrows(ConflictException.class, () -> rooms.retire(room));
+    }
+
+    @Test
+    void amendmentRecalculatesInvoiceWithoutSecondAdvanceAndAppendsHistory() {
+        UUID guest=createGuest();
+        String room=createRoom(RoomOperationalStatus.ACTIVE);
+        var original=bookings.create(request(guest,room,start,start.plusDays(2),2));
+        UUID id=original.reservation().bookingId();
+        assertEquals(0,new BigDecimal("20160.00").compareTo(original.invoice().grossTotal()));
+
+        var revised=modifications.change(id,new lk.smartstay.reservation.api.ReservationModifyRequest(
+            start,start.plusDays(5),3),UUID.randomUUID());
+
+        assertEquals(5,revised.invoice().nights());
+        assertEquals(3,revised.reservation().guestCount());
+        assertEquals(0,new BigDecimal("52752.00").compareTo(revised.invoice().grossTotal()));
+        assertEquals(0,new BigDecimal("10000.00").compareTo(revised.reservation().recordedAdvance()));
+        assertEquals(0,new BigDecimal("42752.00").compareTo(revised.invoice().balanceDue()));
+        assertEquals(original.invoice().invoiceId(),revised.invoice().invoiceId());
+        var history=modifications.history(id);
+        assertEquals(1,history.size());
+        assertEquals(0,new BigDecimal("20160.00").compareTo(history.getFirst().previousGrossTotal()));
+        assertEquals(0,new BigDecimal("52752.00").compareTo(history.getFirst().newGrossTotal()));
+        modifications.change(id,new lk.smartstay.reservation.api.ReservationModifyRequest(
+            start,start.plusDays(5),3),UUID.randomUUID());
+        assertEquals(1,amendments.count());
+    }
+
+    @Test
+    void amendmentCannotOverlapAnotherConfirmedReservation() {
+        UUID guest=createGuest();
+        String room=createRoom(RoomOperationalStatus.ACTIVE);
+        var first=bookings.create(request(guest,room,start,start.plusDays(2),2));
+        bookings.create(request(guest,room,start.plusDays(2),start.plusDays(4),2));
+        assertThrows(ConflictException.class,()->modifications.change(
+            first.reservation().bookingId(),
+            new lk.smartstay.reservation.api.ReservationModifyRequest(start,start.plusDays(3),2),
+            UUID.randomUUID()));
+    }
+
+    @Test
+    void cancelledBookingCannotBeModified() {
+        UUID guest=createGuest();
+        String room=createRoom(RoomOperationalStatus.ACTIVE);
+        var original=bookings.create(request(guest,room,start,start.plusDays(2),2));
+        bookings.cancel(original.reservation().bookingId());
+        assertThrows(IllegalArgumentException.class,()->modifications.change(
+            original.reservation().bookingId(),
+            new lk.smartstay.reservation.api.ReservationModifyRequest(start,start.plusDays(3),2),
+            UUID.randomUUID()));
     }
 
     @Test

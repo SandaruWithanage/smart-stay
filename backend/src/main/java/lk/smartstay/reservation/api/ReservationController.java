@@ -7,6 +7,8 @@ import java.util.UUID;
 import lk.smartstay.billing.api.InvoiceView;
 import lk.smartstay.identity.service.AuthorizationService;
 import lk.smartstay.reservation.service.BookingManagementService;
+import lk.smartstay.reservation.service.ReservationModificationService;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -24,10 +26,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReservationController {
     private final BookingManagementService service;
     private final AuthorizationService authz;
+    private final ReservationModificationService modifications;
 
-    public ReservationController(BookingManagementService service, AuthorizationService authz) {
-        this.service = service;
-        this.authz = authz;
+    public ReservationController(BookingManagementService service, AuthorizationService authz,
+                                 ReservationModificationService modifications) {
+        this.service=service;
+        this.authz=authz;
+        this.modifications=modifications;
     }
 
     /**
@@ -67,6 +72,20 @@ public class ReservationController {
     public InvoiceView invoice(@PathVariable UUID id, Authentication user) {
         authz.requireReservation(user, id, "invoice.read.any", "invoice.read.own");
         return service.invoice(id);
+    }
+
+    @PutMapping("/{id}")
+    public BookingReceipt modify(@PathVariable UUID id,
+                                 @Valid @RequestBody ReservationModifyRequest input,
+                                 Authentication user) {
+        authz.requireReservation(user, id, "reservation.modify.any", "reservation.modify.own");
+        return modifications.change(id, input, authz.userId(user));
+    }
+
+    @GetMapping("/{id}/amendments")
+    public List<ReservationAmendmentView> amendments(@PathVariable UUID id, Authentication user) {
+        authz.requireReservation(user, id, "reservation.read.any", "reservation.read.own");
+        return modifications.history(id);
     }
 
     @PostMapping("/{id}/cancel")

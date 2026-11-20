@@ -73,6 +73,18 @@ LKR 10,000 advance before a green **Approve** action creates a confirmed reserva
 
 Details and unverified coursework assumptions: `docs/SEMANTIC-COLORS-AND-BOOKING-REQUESTS.md`.
 
+## Milestone 7: Reservation amendments
+
+Staff and guests with the correct database permissions can modify confirmed
+reservations at `/reservations/{id}/modify`. This supports same-room date and
+guest-count changes before the provisional 24-hour check-in cutoff.
+
+The Java service revalidates overlap, the 48-hour notice if check-in changes, and
+recalculates the detailed invoice. The original LKR 10,000 advance is **not charged
+again**. Amendments are stored in an append-only PostgreSQL history table.
+
+See `docs/RESERVATION-AMENDMENTS.md`. Assumption O-07 still needs lecturer confirmation.
+
 ## Available API
 
 | Method | Endpoint | Status |

@@ -97,9 +97,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Package backend for browser smoke
-        run: mvn -B --no-transfer-progress -DskipTests package
+      - name: Package backend for browser smoke (retry transient Maven Central failures)
         working-directory: backend
+        run: |
+          for attempt in 1 2 3; do
+            if mvn -B --no-transfer-progress -DskipTests package; then exit 0; fi
+            sleep $((attempt * 8))
+          done
+          exit 1
       - name: Install frontend and chromium
         run: |
           npm install --no-audit --no-fund

@@ -4,18 +4,18 @@ import { BedDouble, CalendarDays, CircleAlert, FileText, ShieldCheck } from "luc
 import AppShell from "@/components/app-shell";
 import { InvoiceBreakdown } from "@/components/ui/invoice-breakdown";
 import { PrintButton } from "@/components/ui/print-button";
-import { PageHeader, StatusBadge, Surface } from "@/components/ui/hotel-ui";
+import { Feedback, PageHeader, StatusBadge, Surface } from "@/components/ui/hotel-ui";
 import { displayDate, lkr, roomName, type InvoiceView } from "@/lib/hotel";
 import { authenticatedJson } from "@/lib/server-hotel";
 import { sessionManifest } from "@/lib/server-session";
 
-export default async function InvoicePage({params}:{params:Promise<{id:string}>}) {
+export default async function InvoicePage({params,searchParams}:{params:Promise<{id:string}>;searchParams:Promise<{updated?:string}>}) {
   const manifest = await sessionManifest();
   if (!manifest) redirect("/login");
   if (!manifest.permissions.some(p=>p==="invoice.read.any"||p==="invoice.read.own")) notFound();
   const {id}=await params;
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound();
-  const invoice=await authenticatedJson<InvoiceView>(`/api/reservations/${id}/invoice`);
+  const [invoice,query]=await Promise.all([authenticatedJson<InvoiceView>(`/api/reservations/${id}/invoice`),searchParams]);
   if (!invoice) notFound();
   return <AppShell manifest={manifest}>
     <div className="ss-print-hidden">
@@ -23,6 +23,7 @@ export default async function InvoicePage({params}:{params:Promise<{id:string}>}
         description="Itemized room charges, discount, tax, and the recorded LKR 10,000 advance."
         action={<PrintButton/>}/>
     </div>
+    {query.updated==="1" && <div className="ss-print-hidden"><Feedback status="saved"/></div>}
     <div className="ss-invoice-paper">
       <header className="ss-invoice-heading">
         <div className="ss-invoice-brand"><div className="ss-invoice-logo"><BedDouble size={24}/></div>
