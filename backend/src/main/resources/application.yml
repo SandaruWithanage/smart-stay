@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: smartstay-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/smartstay}
+    username: ${DB_USERNAME:smartstay}
+    password: ${DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=200,expireAfterWrite=5m
+
+server:
+  port: ${PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
