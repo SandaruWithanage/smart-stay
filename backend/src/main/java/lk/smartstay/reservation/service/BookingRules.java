@@ -25,6 +25,20 @@ public final class BookingRules {
         }
     }
 
+    public static void requireModificationAllowed(ReservationStatus status,
+                                                  LocalDateTime requestTime,
+                                                  LocalDateTime originalCheckIn) {
+        Objects.requireNonNull(status);
+        Objects.requireNonNull(requestTime);
+        Objects.requireNonNull(originalCheckIn);
+        if (status != ReservationStatus.CONFIRMED) {
+            throw new IllegalArgumentException("Only confirmed reservations may be modified");
+        }
+        if (requestTime.plus(CANCELLATION_LEAD).isAfter(originalCheckIn)) {
+            throw new IllegalArgumentException("Modification prohibited within 24 hours of check-in");
+        }
+    }
+
     public static void requireCancellationAllowed(ReservationStatus status,
                                                   LocalDateTime requestTime,
                                                   LocalDateTime checkInTime) {

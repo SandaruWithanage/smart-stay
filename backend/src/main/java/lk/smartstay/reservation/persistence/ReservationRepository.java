@@ -19,6 +19,15 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
 
     @Query("""
       select case when count(b) > 0 then true else false end
+      from ReservationEntity b where b.room.id = :roomId and b.id <> :excludeId
+        and b.status = :status and b.checkIn < :checkout and b.checkOut > :checkin
+      """)
+    boolean hasConflictExcluding(@Param("roomId") String roomId,
+        @Param("excludeId") UUID excludeId, @Param("status") ReservationStatus status,
+        @Param("checkout") LocalDate checkout, @Param("checkin") LocalDate checkin);
+
+    @Query("""
+      select case when count(b) > 0 then true else false end
       from ReservationEntity b where b.room.id = :roomId and b.status = :status
         and b.checkIn < :checkout and b.checkOut > :checkin
       """)

@@ -10,7 +10,7 @@
 | O-04 | Check-in time and 24h cutoff | Provisional 14:00 local check-in; >= 24h cancellation allowed | Yes |
 | O-05 | Tax base | Tax on discounted base + extra guest charges | Yes |
 | O-06 | Refundable advance | Price breakdown exposes refund due; no payment or refund gateway | Yes |
-| O-07 | Modification feature | Not implemented in first milestone | Yes |
+| O-07 | Reservation modification scope | Same-room dates and guest count; 24-hour original check-in cutoff; preserve advance and amendment history | Yes |
 | O-08 | Available / Reserved / Maintenance | ACTIVE/MAINTENANCE operational state; RESERVED derived per stay dates | Yes |
 | O-09 | Hotel chain structure | Single-hotel inventory first | Yes |
 | O-10 | Web GUI accepted by coursework | Assumed pending lecturer decision | Yes |

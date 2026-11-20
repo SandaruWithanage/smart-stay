@@ -88,6 +88,24 @@ public class InvoiceEntity {
         this.voided = false;
     }
 
+    /** Replace active billing snapshot only after a validated reservation amendment. */
+    public void reprice(RoomPackageEntity pkg, InvoiceBreakdown charges) {
+        if (voided) throw new IllegalArgumentException("Cannot reprice a voided invoice");
+        Objects.requireNonNull(pkg);
+        Objects.requireNonNull(charges);
+        this.baseCharge = charges.baseCharge();
+        this.extraCharge = charges.extraGuestCharge();
+        this.discountAmount = charges.longStayDiscount();
+        this.taxAmount = charges.taxAmount();
+        this.grossTotal = charges.grossTotal();
+        this.advanceApplied = charges.advanceApplied();
+        this.balanceDue = charges.balanceDue();
+        this.refundDue = charges.refundDue();
+        this.dailyRateSnapshot = pkg.getDailyRate();
+        this.nights = Math.toIntExact(reservation.getStay().nights());
+        this.guestCount = reservation.getGuestCount();
+    }
+
     public void voidInvoice() { this.voided = true; }
     public UUID getId() { return id; }
     public BigDecimal getBaseCharge() { return baseCharge; }
