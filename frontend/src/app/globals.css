@@ -483,3 +483,11 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--deep); outline-
   .topbar-title-compact {display:inline}
   .topbar .avatar {height:32px;width:32px}
 }
+
+/* A sufficiently opaque frosted drawer keeps navigation legible above page text. */
+@media(max-width:930px) {
+  .sidebar.sidebar-open {
+    background:var(--ss-paper);
+    background:color-mix(in srgb, var(--ss-paper) 96%, transparent);
+  }
+}
