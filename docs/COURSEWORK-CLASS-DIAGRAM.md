@@ -155,7 +155,7 @@ class KINGSTON_ID_RoomAvailabilityService {
   +search(checkIn, checkOut, type) List
 }
 
-KINGSTON_ID_UserEntity "0..1" --> "1" KINGSTON_ID_GuestEntity : linked profile
+KINGSTON_ID_UserEntity "0..1" --> "0..1" KINGSTON_ID_GuestEntity : optional linked profile
 KINGSTON_ID_ReservationEntity "0..*" --> "1" KINGSTON_ID_GuestEntity : guest
 KINGSTON_ID_ReservationEntity "0..*" --> "1" KINGSTON_ID_RoomEntity : allocated room
 KINGSTON_ID_ReservationEntity ..> KINGSTON_ID_StayPeriod : validates interval
@@ -175,7 +175,7 @@ KINGSTON_ID_RoomManagementService ..> KINGSTON_ID_RoomEntity : maintains invento
 KINGSTON_ID_AuthorizationService ..> KINGSTON_ID_ReservationEntity : verifies guest ownership
 ```
 
-**Diagram interpretation:** Association multiplicity indicates the logical domain relationship; Java JPA `@ManyToOne` is used for room/guest links and `@OneToOne` for the invoice. The account-to-guest link is a nullable `guest_id` UUID (not a JPA relationship), therefore the dashed/logical link in the diagram should not be described as a JPA object property. `RoomPackage`, `StayPeriod`, and `InvoiceBreakdown` are immutable value records; they are not JPA tables themselves. The primary entity persistences use `RoomPackageEntity` etc.
+**Diagram interpretation:** Association multiplicity indicates the logical domain relationship; Java JPA `@ManyToOne` is used for room/guest links and `@OneToOne` for the invoice. The account-to-guest link is a nullable `guest_id` UUID (not a JPA relationship), therefore the logical relationship drawn in the diagram should not be described as a JPA object property. `RoomPackage`, `StayPeriod`, and `InvoiceBreakdown` are immutable value records; they are not JPA tables themselves. The primary entity persistences use `RoomPackageEntity` etc.
 
 ## Focused identity and security diagram
 
