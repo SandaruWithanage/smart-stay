@@ -1,44 +1,34 @@
-# Development status — foundation milestone
+# Development status — booking persistence milestone
 
-## Implemented in this feature branch
+## Delivered in foundation PR #1
 
-- [x] GitHub monorepo, environment template, editor config, ignore rules.
-- [x] Spring Boot modular backend bootstrap and read-only public room-package API.
-- [x] PostgreSQL 18 Docker Compose and Flyway V1 schema with official package seeds.
-- [x] Database exclusion constraint for confirmed reservation date ranges.
-- [x] Pure Java stay interval, availability checking and booking timing rules.
-- [x] Pure Java `BigDecimal` pricing with discount, tax, advance and refund-due lines.
-- [x] JUnit tests for pricing and date boundaries.
-- [x] PostgreSQL-backed Spring context/migration integration test in CI.
-- [x] Next.js responsive Aqua Frost app shell, accessible menus/theme toggle, room-package cards.
-- [x] Typed safe route-key registry and permission-filtered **preview-only** navigation.
-- [x] GitHub CI workflow to test backend and database and typecheck/build frontend.
+- [x] Monorepo, Spring Boot 4.1.2, Next.js Aqua Frost, PostgreSQL/Flyway, core Java pricing/date algorithms.
+- [x] Read-only package catalog, preview-only permission-filtered navigation, CI.
 
-## Not yet implemented (do not present as delivered)
+## New in stacked milestone PR #2
 
-- [ ] Guest registration/login, JWT creation/validation and password handling.
-- [ ] Database-driven roles, permissions, resource-specific ABAC, revocation and audit.
-- [ ] Authenticated server-provided UI manifest and administrator navigation editor.
-- [ ] Room CRUD repository, room capacity approval and status management.
-- [ ] Actual date-based search and booking transaction services exposed via REST.
-- [ ] Advance recording/settlement and complete invoice persistence + print output.
-- [ ] Cancellation endpoint and refund bookkeeping.
-- [ ] UI forms for guest and administrator workflows.
-- [ ] Cache integration for DB-backed reference data.
-- [ ] Comprehensive 40-case verification evidence and final ID-prefixed UML/report.
+- [x] JPA entities/repositories for guests, rooms, packages, reservations, invoices.
+- [x] Flyway V2 invoice snapshots and explicit cancellation refund obligation.
+- [x] Transactional room management, guest registration and booking service operations.
+- [x] Row-level room locking plus database overlap exclusion constraint.
+- [x] Public read-only date/type room-availability API.
+- [x] Protected routes for guest records, room CRUD, reservation search/cancel and invoices.
+- [x] Cached reference package catalog served from database rather than hardcoded values.
+- [x] PostgreSQL integration tests for booking lifecycle and financial snapshots.
+- [x] Privileged routes intentionally remain denied until real JWT and ABAC are added.
 
-## Next implementation slice
+## Not yet implemented
 
-1. JPA mappings for room, guest, reservation, and invoice; repository tests with PostgreSQL.
-2. Transactional availability search + reservation service, including concurrent booking integration test.
-3. Room CRUD API and guest registration.
-4. AuthN/AuthZ module; deny by default until permission and ownership enforcement is proven.
-5. Wire real Next.js booking flow to authenticated backend.
-6. Implement DB-managed UI manifest/permission editor after core hotel functionality.
+- [ ] JWT login/refresh, registration ownership, DB-driven RBAC/ABAC, audit and session invalidation.
+- [ ] Authenticated and accessible privileged REST operations (currently denied by design).
+- [ ] Authenticated frontend guest registration, booking/cancellation and admin room forms.
+- [ ] Real payment capture or refund transfer (not claimed).
+- [ ] Full coursework executed test report, lecturer-approved assumptions and ID-prefixed UML.
 
-## Review gate
+## Next phase
 
-- CI Maven tests and Next typecheck/build green.
-- PostgreSQL V1 migration runs on empty database and seeds official rates.
-- Documentation distinguishes explicit brief rules from assumptions.
-- No admin or customer-specific records exposed by unsecured APIs.
+Implement JWT authentication and database-managed roles/permissions with resource ownership before exposing sensitive endpoints. Then connect front-end workflows, add security tests and admin navigation configuration. The original coursework remains the priority; do not expand into unrelated hotel features.
+
+## Current assumptions
+
+Read `docs/ASSUMPTIONS.md`. All timing, extra-guest billing and tax interpretations remain provisional.

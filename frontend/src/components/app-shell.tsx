@@ -2,13 +2,13 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { BedDouble, CalendarDays, ChevronLeft, Home, Menu, Moon, ShieldCheck, Sun, X } from "lucide-react";
+import { BedDouble, CalendarDays, ChevronLeft, Home, Menu, Moon, ShieldCheck, Sun, Search, X } from "lucide-react";
 import { type NavigationItem, type UiManifest, routeRegistry, visibleNavigation } from "@/lib/navigation";
 
 type Props = { children: ReactNode; manifest: UiManifest };
 
 function NavigationIcon({ item }: { item: NavigationItem }) {
-  const icons = { home: Home, rooms: BedDouble, rules: CalendarDays };
+  const icons = { home: Home, rooms: BedDouble, search: Search, rules: CalendarDays };
   const Icon = icons[item.iconKey];
   return <Icon aria-hidden="true" size={18} strokeWidth={1.9} />;
 }
