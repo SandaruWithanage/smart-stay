@@ -1,10 +1,10 @@
-export type RouteKey = "overview" | "packages" | "courseworkRules";
+export type RouteKey = "overview" | "packages" | "availability" | "courseworkRules";
 
 export type NavigationItem = {
   id: string;
   label: string;
   routeKey: RouteKey;
-  iconKey: "home" | "rooms" | "rules";
+  iconKey: "home" | "rooms" | "search" | "rules";
   order: number;
   requiredPermission?: string;
 };
@@ -21,6 +21,7 @@ export type UiManifest = {
 export const routeRegistry: Record<RouteKey, string> = {
   overview: "/",
   packages: "/#packages",
+  availability: "/availability",
   courseworkRules: "/#rules"
 };
 
@@ -28,11 +29,12 @@ export const publicPreviewManifest: UiManifest = {
   configurationVersion: 1,
   displayName: "Guest preview",
   mode: "public-preview",
-  permissions: ["catalog.read"],
+  permissions: ["catalog.read", "room.availability.read"],
   navigation: [
     { id: "overview", label: "Overview", routeKey: "overview", iconKey: "home", order: 10 },
     { id: "packages", label: "Room packages", routeKey: "packages", iconKey: "rooms", order: 20, requiredPermission: "catalog.read" },
-    { id: "rules", label: "Booking rules", routeKey: "courseworkRules", iconKey: "rules", order: 30 }
+    { id: "availability", label: "Find available rooms", routeKey: "availability", iconKey: "search", order: 30, requiredPermission: "room.availability.read" },
+    { id: "rules", label: "Booking rules", routeKey: "courseworkRules", iconKey: "rules", order: 40 }
   ]
 };
 
