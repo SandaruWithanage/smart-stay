@@ -9,8 +9,10 @@ test("real guest request -> staff approval -> confirmed invoice", async ({ page 
   // Bootstrap administrator exists only in CI via test-scoped environment variables.
   await page.goto("/login");
   await page.getByLabel("Email address").fill("e2e-admin@smartstay.test");
-  await page.getByLabel("Password").fill("TestOnlySuperSecurePassword_1234!");
+  await page.getByLabel("Password").fill(process.env.SMARTSTAY_BOOTSTRAP_ADMIN_PASSWORD ?? "");
+  const loginResponse = page.waitForResponse(r => r.url().includes("/api/session/login") && r.request().method() === "POST");
   await page.getByRole("button", { name: /^Sign in$/ }).click();
+  expect((await loginResponse).status()).toBe(200);
   await expect(page).toHaveURL(/\/workspace/);
 
   // Create an actual PostgreSQL room through the shared admin inventory form.
@@ -48,7 +50,7 @@ test("real guest request -> staff approval -> confirmed invoice", async ({ page 
   await page.getByRole("button", { name: "Sign out" }).click();
   await page.goto("/login");
   await page.getByLabel("Email address").fill("e2e-admin@smartstay.test");
-  await page.getByLabel("Password").fill("TestOnlySuperSecurePassword_1234!");
+  await page.getByLabel("Password").fill(process.env.SMARTSTAY_BOOTSTRAP_ADMIN_PASSWORD ?? "");
   await page.getByRole("button", { name: /^Sign in$/ }).click();
   await expect(page).toHaveURL(/\/workspace/);
   await page.goto("/admin/booking-requests");
