@@ -379,3 +379,9 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--deep); outline-
 .ss-lookup-hint {color:var(--muted);line-height:1.7;font-size:11px;margin:0}
 .ss-lookup-error {color:var(--ss-danger);font-size:11px}
 @media(max-width:630px){.ss-lookup-row{flex-direction:column;align-items:stretch}}
+
+/* Final consistency pass: shortcuts and non-clipped inline room editing. */
+.ss-shortcuts {display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.ss-inline-editor {position:static;box-shadow:none;min-width:235px;margin-top:12px}
+.ss-invoice-paper .ss-badge-success {color:#065f46}
+.ss-invoice-paper .ss-badge-danger {color:#9f1239}

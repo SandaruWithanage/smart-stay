@@ -59,6 +59,22 @@ class AuthorizationHttpIntegrationTest {
     }
 
     @Test
+    void administratorCanLookUpRegisteredGuestByDocument() throws Exception {
+        Registered guest = register("Looked Up Guest");
+        Registered staff = register("Authorized Staff");
+        access.assignRole(staff.userId(), "ADMIN");
+        String document = guestRepository.findById(guest.guestId())
+            .orElseThrow().getDocumentNumber();
+        mvc.perform(post("/api/guests/lookup")
+            .header("Authorization","Bearer "+staff.token())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(java.util.Map.of(
+                "documentNumber", document))))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(guest.guestId().toString()));
+    }
+
+    @Test
     void guestCannotAccessDeskGuestLookupOrStaffReservationLedger() throws Exception {
         Registered alice = register("Restricted Guest");
         mvc.perform(post("/api/guests/lookup")
