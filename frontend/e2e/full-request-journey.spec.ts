@@ -1,0 +1,78 @@
+import { test, expect } from "@playwright/test";
+
+test("real guest request -> staff approval -> confirmed invoice", async ({ page }, info) => {
+  test.skip(info.project.name === "mobile-chromium", "Full transaction is covered on desktop; mobile layout uses smoke checks.");
+  const roomId = "QA-" + Math.random().toString(36).slice(2, 9).toUpperCase();
+  const guestEmail = `guest-${crypto.randomUUID()}@example.org`;
+  const guestPassword = "TestGuestStrong!123456";
+
+  // Bootstrap administrator exists only in CI via test-scoped environment variables.
+  await page.goto("/login");
+  await page.getByLabel("Email address").fill("e2e-admin@smartstay.test");
+  await page.getByLabel("Password").fill("TestOnlySuperSecurePassword_1234!");
+  await page.getByRole("button", { name: /^Sign in$/ }).click();
+  await expect(page).toHaveURL(/\/workspace/);
+
+  // Create an actual PostgreSQL room through the shared admin inventory form.
+  await page.goto("/admin/rooms");
+  await page.locator("#new-room-id").fill(roomId);
+  await page.locator("#new-capacity").fill("2");
+  await page.getByRole("button", { name: /Add room/ }).click();
+  await expect(page).toHaveURL(/status=created/);
+  await expect(page.getByRole("cell", { name: roomId })).toBeVisible();
+
+  // Sign out, register a new guest and confirm the dynamic sidebar is permission-scoped.
+  await page.getByRole("button", { name: "Sign out" }).click();
+  await page.goto("/register");
+  await page.getByLabel("Full name").fill("Browser QA Guest");
+  await page.getByLabel("NIC or passport number").fill("QA" + crypto.randomUUID().replaceAll("-", "").slice(0, 24));
+  await page.getByLabel("Contact number").fill("+94770001122");
+  await page.getByLabel("Email address").fill(guestEmail);
+  await page.getByLabel(/Password \(at least/).fill(guestPassword);
+  await page.getByRole("button", { name: /Create account/ }).click();
+  await expect(page).toHaveURL(/\/workspace/);
+  await expect(page.getByRole("link", { name: "My booking requests" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Room inventory" })).toHaveCount(0);
+
+  // Public search preserves the authenticated sidebar and selected room/dates.
+  await page.goto("/availability?checkIn=2030-09-10&checkOut=2030-09-12");
+  await expect(page.getByRole("link", { name: "My booking requests" })).toBeVisible();
+  const card = page.locator(".availability-room").filter({ hasText: roomId });
+  await expect(card).toBeVisible();
+  await card.getByRole("link", { name: "Request this stay" }).click();
+  await expect(page.getByRole("heading", { name: "Request your stay" })).toBeVisible();
+  await page.getByRole("button", { name: "Submit booking request" }).click();
+  await expect(page).toHaveURL(/\/my\/booking-requests\?status=requested/);
+  await expect(page.locator("tr").filter({hasText: roomId}).getByText("Pending")).toBeVisible();
+
+  await page.getByRole("button", { name: "Sign out" }).click();
+  await page.goto("/login");
+  await page.getByLabel("Email address").fill("e2e-admin@smartstay.test");
+  await page.getByLabel("Password").fill("TestOnlySuperSecurePassword_1234!");
+  await page.getByRole("button", { name: /^Sign in$/ }).click();
+  await expect(page).toHaveURL(/\/workspace/);
+  await page.goto("/admin/booking-requests");
+  const row = page.locator("tr").filter({hasText: roomId});
+  await expect(row).toBeVisible();
+  await row.getByRole("checkbox").check();
+  page.once("dialog", dialog => dialog.accept());
+  await row.getByRole("button", { name: "Approve" }).click();
+  await expect(page).toHaveURL(/feedback=approved/);
+  await page.getByRole("combobox", { name: "Filter booking request status" }).selectOption("APPROVED");
+  await page.getByRole("button", { name: "Apply filter" }).click();
+  await expect(page.locator("tr").filter({hasText: roomId}).getByText("Approved")).toBeVisible();
+
+  await page.getByRole("button", { name: "Sign out" }).click();
+  await page.goto("/login");
+  await page.getByLabel("Email address").fill(guestEmail);
+  await page.getByLabel("Password").fill(guestPassword);
+  await page.getByRole("button", { name: /^Sign in$/ }).click();
+  await expect(page).toHaveURL(/\/workspace/);
+  await page.goto("/my/booking-requests");
+  await expect(page.locator("tr").filter({hasText: roomId}).getByText("Approved")).toBeVisible();
+  await page.locator("tr").filter({hasText: roomId}).getByRole("link", { name: "View invoice" }).click();
+  await expect(page.locator(".ss-invoice-paper")).toBeVisible();
+  await expect(page.getByText(roomId).first()).toBeVisible();
+  await page.emulateMedia({media:"print"});
+  await expect(page.locator(".ss-invoice-paper")).toBeVisible();
+});

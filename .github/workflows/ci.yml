@@ -59,3 +59,79 @@ jobs:
         run: npm run test:ui
       - name: Build frontend
         run: npm run build
+
+  browser-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: smartstay
+          POSTGRES_USER: smartstay
+          POSTGRES_PASSWORD: test-only-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U smartstay -d smartstay"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      DB_URL: jdbc:postgresql://127.0.0.1:5432/smartstay
+      DB_USERNAME: smartstay
+      DB_PASSWORD: test-only-password
+      SMARTSTAY_JWT_SECRET_BASE64: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
+      SMARTSTAY_BOOTSTRAP_ADMIN_EMAIL: e2e-admin@smartstay.test
+      SMARTSTAY_BOOTSTRAP_ADMIN_PASSWORD: TestOnlySuperSecurePassword_1234!
+      API_BASE_URL: http://127.0.0.1:8080
+      SMARTSTAY_E2E_BASE_URL: http://127.0.0.1:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: backend/pom.xml
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Package backend for browser smoke
+        run: mvn -B --no-transfer-progress -DskipTests package
+        working-directory: backend
+      - name: Install frontend and chromium
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+        working-directory: frontend
+      - name: Build production frontend
+        run: npm run build
+        working-directory: frontend
+      - name: Test real browser flows against Spring Boot + Next.js + PostgreSQL
+        shell: bash
+        run: |
+          set -euo pipefail
+          java -jar backend/target/smartstay-api-0.1.0-SNAPSHOT.jar > /tmp/smartstay-api.log 2>&1 &
+          API_PID=$!
+          (cd frontend && npm run start -- --hostname 127.0.0.1 --port 3000) > /tmp/smartstay-next.log 2>&1 &
+          NEXT_PID=$!
+          trap 'cat /tmp/smartstay-api.log | tail -80; cat /tmp/smartstay-next.log | tail -80; kill $API_PID $NEXT_PID 2>/dev/null || true' EXIT
+          for i in $(seq 1 100); do
+            if curl -fsS http://127.0.0.1:8080/api/public/room-packages > /dev/null 2>&1; then break; fi
+            sleep 2
+          done
+          curl --fail http://127.0.0.1:8080/api/public/room-packages > /dev/null
+          for i in $(seq 1 50); do
+            if curl -fsS http://127.0.0.1:3000/login > /dev/null 2>&1; then break; fi
+            sleep 2
+          done
+          curl --fail http://127.0.0.1:3000/login > /dev/null
+          cd frontend && npm run test:e2e
+      - name: Upload failed browser traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smartstay-playwright-failures
+          path: frontend/test-results/
+          retention-days: 7

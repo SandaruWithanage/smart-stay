@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BedDouble, CalendarDays, CircleAlert, Search, ShieldCheck } from "lucide-react";
 import AppShell from "@/components/app-shell";
 import { publicPreviewManifest } from "@/lib/navigation";
+import { sessionManifest } from "@/lib/server-session";
 
 type RoomType = "STANDARD" | "DELUXE" | "SUITE" | "FAMILY_SUITE";
 type Room = {
@@ -56,13 +57,13 @@ export default async function AvailabilityPage({
   searchParams: Promise<Params>;
 }) {
   const params = await searchParams;
-  const result = await findRooms(params);
+  const [result, current] = await Promise.all([findRooms(params), sessionManifest()]);
   const amount = (value: number) => new Intl.NumberFormat("en-LK", {
     maximumFractionDigits: 0
   }).format(value);
 
   return (
-    <AppShell manifest={publicPreviewManifest}>
+    <AppShell manifest={current ?? publicPreviewManifest}>
       <section className="availability-header">
         <span className="eyebrow accent">ROOM COLLECTION / SEARCH</span>
         <h1>Find your next <span style={{ color: "var(--deep)" }}>comfortable stay.</span></h1>

@@ -3,6 +3,7 @@ import { ArrowUpRight, BadgeCheck, CalendarCheck2, CheckCircle2, Clock3, ShieldC
 import AppShell from "@/components/app-shell";
 import { getPublicCatalog } from "@/lib/catalog";
 import { publicPreviewManifest } from "@/lib/navigation";
+import { sessionManifest } from "@/lib/server-session";
 
 const friendlyName: Record<string, string> = {
   STANDARD: "Standard Room",
@@ -12,23 +13,23 @@ const friendlyName: Record<string, string> = {
 };
 
 export default async function HomePage() {
-  const { packages, source } = await getPublicCatalog();
+  const [{ packages, source }, current] = await Promise.all([getPublicCatalog(), sessionManifest()]);
   const money = (n: number) => new Intl.NumberFormat("en-LK", { maximumFractionDigits: 0 }).format(n);
 
   return (
-    <AppShell manifest={publicPreviewManifest}>
+    <AppShell manifest={current ?? publicPreviewManifest}>
       <div className="page-heading">
         <div><div className="eyebrow accent">HOTEL MANAGEMENT · ACADEMIC PROJECT</div>
           <h1>Thoughtful stays, <span>beautifully managed.</span></h1>
-          <p>One calm workspace for room packages, reservations and billing. This is the first functional foundation of SmartStay.</p></div>
-        <span className="status-pill"><span className="dot"/> Foundation milestone</span>
+          <p>A secure workspace for discovering stays, managing reservations, and reviewing billing.</p></div>
+        <span className="status-pill"><span className="dot"/> Hotel booking platform</span>
       </div>
 
       <section className="hero glass-panel">
         <div className="hero-copy">
           <span className="hero-kicker"><Sparkles size={15}/> THE AQUA FROST EXPERIENCE</span>
           <h2>Hotel operations, without the clutter.</h2>
-          <p>A modern booking system built on Java business rules. The public package catalog is available now; secure reservations and administration are next.</p>
+          <p>A modern booking system built on Java business rules. Discover room packages, request a stay, and manage hotel operations through permission-based workspaces.</p>
           <Link className="primary-button" href="#packages">Explore room packages <ArrowUpRight size={17}/></Link>
         </div>
         <div className="hero-art" aria-hidden="true">
@@ -42,7 +43,7 @@ export default async function HomePage() {
       <div className="mini-grid" id="rules">
         <div className="info-card glass-panel"><div className="info-icon"><CalendarCheck2 size={20}/></div><strong>48-hour booking notice</strong><p>Provisional interpretation pending lecturer confirmation.</p></div>
         <div className="info-card glass-panel"><div className="info-icon"><Clock3 size={20}/></div><strong>24-hour cancellation cutoff</strong><p>Business rule enforced in the Java domain service.</p></div>
-        <div className="info-card glass-panel"><div className="info-icon"><ShieldCheck size={20}/></div><strong>Secure-by-default APIs</strong><p>Privileged APIs remain closed until JWT + ABAC arrive.</p></div>
+        <div className="info-card glass-panel"><div className="info-icon"><ShieldCheck size={20}/></div><strong>Secure-by-default APIs</strong><p>JWT authentication and database permissions protect every privileged API.</p></div>
       </div>
 
       <section className="packages-section" id="packages">
@@ -62,7 +63,7 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
-      <div className="notice"><ShieldCheck size={19}/><span>Reservations, customer login, dynamic admin navigation and invoices are under development. Package cards do not claim live room availability.</span></div>
+      <div className="notice"><ShieldCheck size={19}/><span>Guest accounts, request review and invoices are available in the authenticated workspace. Package cards show catalog rates, not live availability; search specific dates to see bookable rooms.</span></div>
     </AppShell>
   );
 }
