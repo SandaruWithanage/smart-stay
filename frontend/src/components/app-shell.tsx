@@ -133,7 +133,7 @@ export default function AppShell({ children, manifest }: Props) {
         <header className="topbar glass-panel">
           <div className="topbar-leading">
             <button ref={menuButtonRef} type="button" className="icon-btn mobile-menu" aria-label="Open menu" aria-controls="smartstay-sidebar" aria-expanded={open} onClick={() => setOpen(true)}><Menu size={20}/></button>
-            <div><span className="eyebrow">SMARTSTAY / WORKSPACE</span><div className="topbar-title">Welcome to SmartStay</div></div>
+            <div><span className="eyebrow">SMARTSTAY / WORKSPACE</span><div className="topbar-title"><span className="topbar-title-full">Welcome to SmartStay</span><span className="topbar-title-compact">SmartStay</span></div></div>
           </div>
           <div className="topbar-actions">
             <span className="preview-chip">{signedIn ? (manifest.roleCodes?.join(", ") ?? "Signed in") : "Public preview"}</span>

@@ -471,3 +471,23 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--deep); outline-
   .sidebar.sidebar-open {visibility:visible;pointer-events:auto}
 }
 @media print {.ss-skip-link {display:none!important}}
+
+/* Pixel-size responsive header: keep the brand and action controls inside 320px. */
+.topbar-title-compact {display:none}
+@media (max-width:660px) {
+  .topbar {padding:0 12px;gap:8px}
+  .topbar-leading,.topbar-actions {gap:8px;min-width:0}
+  .topbar-leading .eyebrow {display:none}
+  .topbar-title {margin-top:0;font-size:14px;white-space:nowrap;line-height:1.25}
+  .topbar-title-full {display:none}
+  .topbar-title-compact {display:inline}
+  .topbar .avatar {height:32px;width:32px}
+}
+
+/* A sufficiently opaque frosted drawer keeps navigation legible above page text. */
+@media(max-width:930px) {
+  .sidebar.sidebar-open {
+    background:var(--ss-paper);
+    background:color-mix(in srgb, var(--ss-paper) 96%, transparent);
+  }
+}

@@ -85,3 +85,27 @@ test("selected visual theme survives navigation and browser reload", async ({ pa
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });
+
+test("mobile header stays inside its container at 320, 375 and 393 pixels", async ({ page }) => {
+  for (const width of [320,375,393]) {
+    await page.setViewportSize({width,height:844});
+    await page.goto("/availability");
+    const compact = page.locator(".topbar-title-compact");
+    await expect(compact).toBeVisible();
+    const bounds = await page.locator(".topbar").evaluate(header => {
+      const h=header.getBoundingClientRect();
+      const title=header.querySelector(".topbar-title")!.getBoundingClientRect();
+      const actions=header.querySelector(".topbar-actions")!.getBoundingClientRect();
+      return {
+        headerTop:h.top, headerBottom:h.bottom, headerRight:h.right,
+        titleTop:title.top, titleBottom:title.bottom, actionsRight:actions.right,
+        documentWidth:document.documentElement.scrollWidth,
+        viewportWidth:document.documentElement.clientWidth
+      };
+    });
+    expect(bounds.titleTop).toBeGreaterThanOrEqual(bounds.headerTop-2);
+    expect(bounds.titleBottom).toBeLessThanOrEqual(bounds.headerBottom+2);
+    expect(bounds.actionsRight).toBeLessThanOrEqual(bounds.headerRight+2);
+    expect(bounds.documentWidth-bounds.viewportWidth).toBeLessThanOrEqual(2);
+  }
+});
