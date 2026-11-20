@@ -49,3 +49,7 @@ A separate mobile browser assertion checks the availability screen for page-leve
 - The guest reservation ledger is checked for document-level horizontal overflow at a 390px mobile width.
 
 These tests are automated smoke/regression coverage. Human review of the generated PDF pages, keyboard/screen-reader workflow, contrast and the final lecturer-required screenshots is still necessary.
+
+## Persistent theme acceptance tests
+
+`public-smoke.spec.ts` checks that a user switching between Aqua Frost light and Spatial Glass dark keeps their selection when navigating from the catalog to availability, reloading and returning. The preference is a theme-only localStorage key. An unset preference follows `prefers-color-scheme`. Browser storage failures do not break the visual toggle. No authentication tokens are placed in browser storage.

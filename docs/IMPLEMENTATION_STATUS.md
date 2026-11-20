@@ -91,3 +91,11 @@ Remain: public-deployment hardening, payment gateway, lecturer decision approval
 - [x] Real A4 PDF generated in CI from a synthetic guest's invoice.
 - [x] Guest reservation mobile-width document-overflow assertion.
 - [ ] Manually inspect the generated A4 PDF and review assistive-technology announcements.
+
+## Milestone 11 — Persistent visual theme
+
+- [x] Aqua Frost / Spatial Glass selection remembered across page navigation and reloads.
+- [x] Fresh sessions use the operating system's preferred color scheme until manually overridden.
+- [x] Theme-only browser storage, guarded against storage access failures.
+- [x] Cross-tab storage changes synchronize visual preferences without exposing profile/session data.
+- [x] Playwright regression coverage for visual preference on navigation and reload.
