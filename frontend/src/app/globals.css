@@ -369,3 +369,13 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--deep); outline-
   .ss-invoice-meta-grid,.ss-invoice-charges,.ss-invoice-breakdown {break-inside:avoid}
   .ss-invoice-paper * {-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+
+.ss-guest-lookup {display:grid;gap:13px;background:rgba(166,227,233,.10);border:1px solid var(--ss-line);padding:16px;border-radius:12px}
+.ss-lookup-row {display:flex;gap:10px;align-items:center;}
+.ss-lookup-row input {flex:1;}
+.ss-lookup-result {display:flex;justify-content:space-between;align-items:center;gap:14px;background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.24);padding:12px;border-radius:10px}
+.ss-lookup-result strong {display:block;font-size:13px}
+.ss-lookup-result small {display:block;font-size:11px;color:var(--muted);overflow-wrap:anywhere;margin-top:5px}
+.ss-lookup-hint {color:var(--muted);line-height:1.7;font-size:11px;margin:0}
+.ss-lookup-error {color:var(--ss-danger);font-size:11px}
+@media(max-width:630px){.ss-lookup-row{flex-direction:column;align-items:stretch}}

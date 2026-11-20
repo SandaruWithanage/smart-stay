@@ -64,3 +64,5 @@ No irrelevant image from the uploaded ZIP is used as hotel artwork.
 - Cancellation records pending refund liability; does not transfer money.
 - Do not create real payment provider UI until there is a real payment integration.
 - Responsive data tables may scroll horizontally; no information should be clipped in print.
+
+**Desk guest lookup** uses a server-mediated same-origin JSON POST rather than submitting NIC/passport numbers in search URLs. The Java endpoint requires `guest.read.any` and the client only stores the selected guest UUID as part of the booking form submission. This is a convenience lookup, not an identity verification process.

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CalendarCheck2, CreditCard, Info, ShieldCheck, UserRoundPlus } from "lucide-react";
 import AppShell from "@/components/app-shell";
+import { GuestLookup } from "@/components/guest-lookup";
 import { SubmitButton } from "@/components/ui/confirm-submit";
 import { EmptyState, Feedback, FormField, PageHeader, SectionHeader, Surface } from "@/components/ui/hotel-ui";
 import { roomName, lkr, type RoomView } from "@/lib/hotel";
@@ -24,8 +25,7 @@ export default async function NewDeskBooking({searchParams}:{searchParams:Promis
           action={<Link className="ss-btn ss-btn-secondary" href="/admin/rooms">Manage inventory</Link>}/> :
           <form action={createDeskBooking} className="ss-booking-form">
             <div className="ss-form-section-label"><UserRoundPlus size={18}/> Guest identity</div>
-            <FormField name="guestId" label="Existing guest UUID" hint="Optional. If provided, new guest fields are ignored.">
-              <input id="guestId" name="guestId" placeholder="Existing registered guest UUID"/></FormField>
+            <GuestLookup/>
             <div className="ss-two-column">
               <FormField name="fullName" label="New guest full name"><input id="fullName" name="fullName" maxLength={200} placeholder="Name as shown on ID"/></FormField>
               <FormField name="documentNumber" label="NIC or passport"><input id="documentNumber" name="documentNumber" maxLength={64} placeholder="Guest document ID"/></FormField>

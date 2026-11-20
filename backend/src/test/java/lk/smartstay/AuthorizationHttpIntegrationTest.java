@@ -59,6 +59,22 @@ class AuthorizationHttpIntegrationTest {
     }
 
     @Test
+    void guestCannotAccessDeskGuestLookupOrStaffReservationLedger() throws Exception {
+        Registered alice = register("Restricted Guest");
+        mvc.perform(post("/api/guests/lookup")
+            .header("Authorization","Bearer "+alice.token())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\\"documentNumber\\":\\"NIC-12345\\"}"))
+            .andExpect(status().isForbidden());
+        mvc.perform(get("/api/admin/reservations")
+            .header("Authorization","Bearer "+alice.token()))
+            .andExpect(status().isForbidden());
+        mvc.perform(get("/api/me/reservations")
+            .header("Authorization","Bearer "+alice.token()))
+            .andExpect(status().isOk());
+    }
+
+    @Test
     void guestRoleCannotCreateRoomsOrReadOtherGuests() throws Exception {
         Registered alice = register("Alice Test");
         Registered bob = register("Bob Test");
