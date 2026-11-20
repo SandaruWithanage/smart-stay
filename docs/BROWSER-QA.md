@@ -53,3 +53,9 @@ These tests are automated smoke/regression coverage. Human review of the generat
 ## Persistent theme acceptance tests
 
 `public-smoke.spec.ts` checks that a user switching between Aqua Frost light and Spatial Glass dark keeps their selection when navigating from the catalog to availability, reloading and returning. The preference is a theme-only localStorage key. An unset preference follows `prefers-color-scheme`. Browser storage failures do not break the visual toggle. No authentication tokens are placed in browser storage.
+
+## Mobile topbar and invoice wording refinement
+
+The earlier Pixel 7 screenshot collection revealed a genuine visual issue: the long workspace title wrapped beyond the 70px mobile topbar. The mobile view now uses a compact SmartStay title, smaller spacing and hidden eyebrow at 660px or less, with browser geometry checks at **320, 375 and 393px**. Desktop retains the full heading.
+
+Invoice wording now uses **Guest invoice / folio**, avoiding the impression that the educational example is an issued tax invoice. The disclaimer about electronic payments and formal tax receipts remains visible.

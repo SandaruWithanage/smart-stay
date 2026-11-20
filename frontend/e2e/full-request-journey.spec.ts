@@ -84,6 +84,7 @@ test("real guest request -> staff approval -> confirmed invoice", async ({ page 
   await page.locator("tr").filter({hasText: roomId}).getByRole("link", { name: "View invoice" }).click();
   await expect(page.locator(".ss-invoice-paper")).toBeVisible();
   await expect(page.getByText(roomId).first()).toBeVisible();
+  await expect(page.getByText("GUEST INVOICE / FOLIO")).toBeVisible();
   await captureUiEvidence(page, "12-invoice-before-amendment", info);
   // Amend a confirmed stay without charging a second advance.
   await page.goto("/my/reservations");

@@ -99,3 +99,10 @@ Remain: public-deployment hardening, payment gateway, lecturer decision approval
 - [x] Theme-only browser storage, guarded against storage access failures.
 - [x] Cross-tab storage changes synchronize visual preferences without exposing profile/session data.
 - [x] Playwright regression coverage for visual preference on navigation and reload.
+
+## Milestone 12 — Mobile header and invoice semantics
+
+- [x] Review actual CI screenshots and identify mobile header overflow.
+- [x] Responsive compact workspace title and action spacing at narrow viewports.
+- [x] Automated checks that the mobile topbar title/actions fit at 320, 375 and 393 CSS pixels.
+- [x] Clarified guest-invoice label to avoid claiming a formal tax receipt.

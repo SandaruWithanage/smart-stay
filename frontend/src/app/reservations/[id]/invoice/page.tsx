@@ -19,7 +19,7 @@ export default async function InvoicePage({params,searchParams}:{params:Promise<
   if (!invoice) notFound();
   return <AppShell manifest={manifest}>
     <div className="ss-print-hidden">
-      <PageHeader kicker="BILLING / OFFICIAL GUEST FOLIO" title="Guest invoice"
+      <PageHeader kicker="BILLING / GUEST FOLIO" title="Guest invoice"
         description="Itemized room charges, discount, tax, and the recorded LKR 10,000 advance."
         action={<PrintButton/>}/>
     </div>
@@ -29,7 +29,7 @@ export default async function InvoicePage({params,searchParams}:{params:Promise<
         <div className="ss-invoice-brand"><div className="ss-invoice-logo"><BedDouble size={24}/></div>
           <div><strong>SmartStay</strong><small>SRI LANKA · HOTEL BOOKING SYSTEM</small></div>
         </div>
-        <div className="ss-invoice-reference"><span>INVOICE / TAX FOLIO</span>
+        <div className="ss-invoice-reference"><span>GUEST INVOICE / FOLIO</span>
           <strong>{invoice.invoiceId.slice(0,8).toUpperCase()}</strong>
           <small>Booking {invoice.reservationId.slice(0,8).toUpperCase()}</small>
           <StatusBadge value={invoice.voided?"VOIDED":"CONFIRMED"}/>
