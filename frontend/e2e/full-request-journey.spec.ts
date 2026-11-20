@@ -38,7 +38,7 @@ test("real guest request -> staff approval -> confirmed invoice", async ({ page 
 
   // Public search preserves the authenticated sidebar and selected room/dates.
   await page.goto("/availability?checkIn=2030-09-10&checkOut=2030-09-12");
-  await expect(page.getByRole("link", { name: "My booking requests" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "My requests" })).toBeVisible();
   const card = page.locator(".availability-room").filter({ hasText: roomId });
   await expect(card).toBeVisible();
   await card.getByRole("link", { name: "Request this stay" }).click();
