@@ -30,6 +30,16 @@ public class GuestService {
     }
 
     @Transactional(readOnly = true)
+    public GuestView findDocument(String document) {
+        if (document == null || document.isBlank() || document.length() > 64) {
+            throw new IllegalArgumentException("Invalid document number");
+        }
+        return GuestView.from(guests.findByDocumentNumber(
+            document.strip().toUpperCase(Locale.ROOT))
+            .orElseThrow(() -> new NotFoundException("Guest not found")));
+    }
+
+    @Transactional(readOnly = true)
     public GuestView find(UUID id) {
         return GuestView.from(guests.findById(id)
             .orElseThrow(() -> new NotFoundException("Guest not found")));

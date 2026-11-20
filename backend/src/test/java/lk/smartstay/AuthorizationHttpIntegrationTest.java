@@ -59,6 +59,38 @@ class AuthorizationHttpIntegrationTest {
     }
 
     @Test
+    void administratorCanLookUpRegisteredGuestByDocument() throws Exception {
+        Registered guest = register("Looked Up Guest");
+        Registered staff = register("Authorized Staff");
+        access.assignRole(staff.userId(), "ADMIN");
+        String document = guestRepository.findById(guest.guestId())
+            .orElseThrow().getDocumentNumber();
+        mvc.perform(post("/api/guests/lookup")
+            .header("Authorization","Bearer "+staff.token())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(java.util.Map.of(
+                "documentNumber", document))))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(guest.guestId().toString()));
+    }
+
+    @Test
+    void guestCannotAccessDeskGuestLookupOrStaffReservationLedger() throws Exception {
+        Registered alice = register("Restricted Guest");
+        mvc.perform(post("/api/guests/lookup")
+            .header("Authorization","Bearer "+alice.token())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(java.util.Map.of("documentNumber", "NIC-12345"))))
+            .andExpect(status().isForbidden());
+        mvc.perform(get("/api/admin/reservations")
+            .header("Authorization","Bearer "+alice.token()))
+            .andExpect(status().isForbidden());
+        mvc.perform(get("/api/me/reservations")
+            .header("Authorization","Bearer "+alice.token()))
+            .andExpect(status().isOk());
+    }
+
+    @Test
     void guestRoleCannotCreateRoomsOrReadOtherGuests() throws Exception {
         Registered alice = register("Alice Test");
         Registered bob = register("Bob Test");

@@ -32,6 +32,12 @@ public class GuestController {
         return service.register(request);
     }
 
+    @PostMapping("/lookup")
+    public GuestView lookup(@Valid @RequestBody GuestLookupRequest request, Authentication auth) {
+        authz.require(auth, "guest.read.any");
+        return service.findDocument(request.documentNumber());
+    }
+
     @GetMapping("/{id}")
     public GuestView find(@PathVariable UUID id, Authentication auth) {
         authz.requireGuest(auth, id, "guest.read.any", "guest.read.own");
