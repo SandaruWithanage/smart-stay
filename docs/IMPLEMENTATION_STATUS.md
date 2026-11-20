@@ -32,3 +32,23 @@ Implement JWT authentication and database-managed roles/permissions with resourc
 ## Current assumptions
 
 Read `docs/ASSUMPTIONS.md`. All timing, extra-guest billing and tax interpretations remain provisional.
+
+## New in stacked PR #3
+
+- [x] PostgreSQL identity accounts, roles, permission grants, allowlisted navigation metadata and configuration revision.
+- [x] Guest login/register with BCrypt + short-lived signed JWT (15 min).
+- [x] JWT issuer/audience/token-version validation and immediate DB grant re-evaluation.
+- [x] Server-enforced guest and reservation ownership checks, admin role grants and navigation editor APIs.
+- [x] Aqua Frost login/register, private workspace, dynamic sidebar and admin access-control interface.
+- [x] Next.js same-origin BFF session handlers storing JWT only in HttpOnly SameSite cookies.
+- [x] PostgreSQL-backed HTTP security tests for unauthenticated, forbidden, cross-guest and revoked sessions.
+
+## Remaining priorities after PR #3
+
+- [ ] Booking creation and invoice viewing UX for authenticated guests and hotel administrators.
+- [ ] Guest self-booking pending/payment-confirmation workflow without fake advance capture.
+- [ ] Real admin room CRUD screens, complete booking and cancellation flows.
+- [ ] CI browser E2E coverage, audit logs, MFA, password reset and rate limiting.
+- [ ] University-approved assumptions and final UML, code listing and test report.
+
+**Security limitation:** This coursework implementation must not be publicly exposed before anti-abuse and operational hardening.

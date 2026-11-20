@@ -16,11 +16,12 @@ spring:
     caffeine:
       spec: maximumSize=200,expireAfterWrite=5m
 
+smartstay:
+  security:
+    jwt-secret-base64: ${SMARTSTAY_JWT_SECRET_BASE64:}
+  bootstrap:
+    admin-email: ${SMARTSTAY_BOOTSTRAP_ADMIN_EMAIL:}
+    admin-password: ${SMARTSTAY_BOOTSTRAP_ADMIN_PASSWORD:}
+
 server:
   port: ${PORT:8080}
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health
