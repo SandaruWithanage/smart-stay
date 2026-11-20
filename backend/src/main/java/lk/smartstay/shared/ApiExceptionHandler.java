@@ -7,6 +7,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -21,9 +23,18 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler({ConflictException.class, DataIntegrityViolationException.class})
     public ResponseEntity<Map<String, Object>> conflict(Exception e) {
-        // Do not leak database constraints, SQL or user records.
         return error(HttpStatus.CONFLICT, e instanceof ConflictException
             ? e.getMessage() : "Record conflicts with an existing record or reservation");
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, Object>> unauthorized(BadCredentialsException e) {
+        return error(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> forbidden(AccessDeniedException e) {
+        return error(HttpStatus.FORBIDDEN, "Access denied");
     }
 
     @ExceptionHandler({IllegalArgumentException.class, MethodArgumentNotValidException.class,
