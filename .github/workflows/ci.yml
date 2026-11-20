@@ -140,3 +140,24 @@ jobs:
           name: smartstay-playwright-failures
           path: frontend/test-results/
           retention-days: 7
+
+  coursework-exports:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate clean source archive and source code appendix
+        shell: pwsh
+        run: |
+          ./scripts/Export-Code-Listings.ps1
+          ./scripts/Create-Submission-Zip.ps1
+          if (!(Test-Path "submission/SmartStay-source.zip")) { throw "Missing source archive" }
+          if (!(Test-Path "submission/SmartStay-Code-Listings.md")) { throw "Missing source listings" }
+          if ((Get-Item "submission/SmartStay-source.zip").Length -lt 10000) { throw "Source archive unexpectedly small" }
+      - name: Attach coursework preparation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: smartstay-coursework-source-${{ github.sha }}
+          path: |
+            submission/SmartStay-source.zip
+            submission/SmartStay-Code-Listings.md
+          retention-days: 14
