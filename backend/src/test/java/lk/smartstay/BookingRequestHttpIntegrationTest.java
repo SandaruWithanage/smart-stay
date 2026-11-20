@@ -141,6 +141,19 @@ class BookingRequestHttpIntegrationTest {
     }
 
     @Test
+    void duplicatePendingRoomDateRequestIsRejected() throws Exception {
+        var guest=register("Duplicate Request");
+        String roomId=room();
+        submit(guest.token(),roomId);
+        String payload=mapper.writeValueAsString(Map.of(
+            "roomId",roomId,"checkIn","2030-08-10","checkOut","2030-08-12","guestCount",2));
+        mvc.perform(post("/api/booking-requests")
+            .header("Authorization","Bearer "+guest.token())
+            .contentType(MediaType.APPLICATION_JSON).content(payload))
+            .andExpect(status().isConflict());
+    }
+
+    @Test
     void guestCannotWithdrawOrListAnotherUsersRequest() throws Exception {
         var alice=register("Alice Request");
         var bob=register("Bob Request");

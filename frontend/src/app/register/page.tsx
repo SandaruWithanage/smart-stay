@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, BedDouble, UserRoundPlus } from "lucide-react";
+import { safeAfterAuthPath } from "@/lib/return-path";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function RegisterPage() {
         setError(body.error ?? "Registration unsuccessful");
         return;
       }
-      router.replace("/workspace");
+      router.replace(safeAfterAuthPath(new URLSearchParams(window.location.search).get("next")));
       router.refresh();
     } catch {
       setError("Unable to connect to the registration service.");
@@ -68,7 +69,13 @@ export default function RegisterPage() {
             {busy ? "Creating account..." : "Create account"} <ArrowRight size={17}/>
           </button>
         </form>
-        <p className="auth-switch">Have an account? <Link href="/login">Sign in</Link></p>
+        <p className="auth-switch">Have an account? <Link href="/login" onClick={event => {
+          const next=safeAfterAuthPath(new URLSearchParams(window.location.search).get("next"));
+          if (next!=="/workspace") {
+            event.preventDefault();
+            router.push("/login?next="+encodeURIComponent(next));
+          }
+        }}>Sign in</Link></p>
         <Link className="auth-back" href="/">Back to room catalog</Link>
       </section>
     </main>

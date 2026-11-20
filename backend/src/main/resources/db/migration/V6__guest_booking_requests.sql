@@ -38,10 +38,7 @@ INSERT INTO role_permissions(role_code,permission_code) VALUES
  ('GUEST','booking_request.create.own'),
  ('GUEST','booking_request.read.own'),
  ('GUEST','booking_request.withdraw.own'),
- ('ADMIN','booking_request.review'),
- ('ADMIN','booking_request.create.own'),
- ('ADMIN','booking_request.read.own'),
- ('ADMIN','booking_request.withdraw.own')
+ ('ADMIN','booking_request.review')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO navigation_items(id,label,route_key,icon_key,sort_order,required_permission,enabled) VALUES

@@ -1,19 +1,28 @@
 import Link from "next/link";
+import { notFound, redirect } from "next/navigation";
 import { CalendarCheck2, ShieldCheck, CreditCard } from "lucide-react";
 import AppShell from "@/components/app-shell";
 import { SubmitButton } from "@/components/ui/confirm-submit";
 import { EmptyState, FormField, PageHeader, SectionHeader, StatusBadge, Surface } from "@/components/ui/hotel-ui";
 import { displayDate, lkr, roomName, type RoomView } from "@/lib/hotel";
-import { backendOrigin } from "@/lib/server-session";
-import { requireAccess } from "@/lib/server-hotel";
+import { backendOrigin, sessionManifest } from "@/lib/server-session";
 import { submitStayRequest } from "./actions";
 
 type Params={roomId?:string;checkIn?:string;checkOut?:string};
 function validDate(v?:string) { return !!v && /^\d{4}-\d{2}-\d{2}$/.test(v) && !Number.isNaN(Date.parse(v)); }
 
 export default async function NewStayRequest({searchParams}:{searchParams:Promise<Params>}) {
-  const manifest=await requireAccess("booking_request.create.own");
   const params=await searchParams;
+  const manifest=await sessionManifest();
+  if (!manifest) {
+    const target="/booking-requests/new?"+new URLSearchParams({
+      roomId:(params.roomId??"").slice(0,32),
+      checkIn:(params.checkIn??"").slice(0,10),
+      checkOut:(params.checkOut??"").slice(0,10)
+    });
+    redirect("/login?next="+encodeURIComponent(target));
+  }
+  if (!manifest.permissions.includes("booking_request.create.own")) notFound();
   const roomId=params.roomId??"";
   const checkIn=params.checkIn??"";
   const checkOut=params.checkOut??"";

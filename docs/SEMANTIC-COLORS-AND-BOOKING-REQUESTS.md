@@ -45,9 +45,9 @@ If the room is no longer available, approval fails and the request remains PENDI
 
 | Permission | Guest | Administrator |
 | --- | --- | --- |
-| `booking_request.create.own` | Yes | Granted but requires linked guest |
-| `booking_request.read.own` | Yes | Granted but only own user ID |
-| `booking_request.withdraw.own` | Yes, pending own only | Own only |
+| `booking_request.create.own` | Yes | Only if separately granted guest access |
+| `booking_request.read.own` | Yes | Only if separately granted guest access |
+| `booking_request.withdraw.own` | Yes, pending own only | Only if separately granted guest access |
 | `booking_request.review` | No | Yes |
 
 Backend permission checks are independent of sidebar visibility. Request identity is resolved from JWT user ID and linked guest record, never from guest IDs in a form. The admin queue is capped to 50 recent requests.
