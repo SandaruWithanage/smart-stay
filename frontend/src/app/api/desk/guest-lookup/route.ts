@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isSameOriginRequest } from "@/lib/request-origin";
 import { backendForUser } from "@/lib/server-session";
 
 /** Same-origin JSON POST; sensitive NIC/passport values stay out of browser URLs. */
 export async function POST(request: NextRequest) {
-  if (request.headers.get("origin") !== request.nextUrl.origin) {
+  if (!isSameOriginRequest(request)) {
     return NextResponse.json({error:"Invalid request origin"}, {status:403});
   }
   const body = await request.json().catch(()=>null) as { documentNumber?:unknown } | null;
