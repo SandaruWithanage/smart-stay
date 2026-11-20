@@ -18,6 +18,7 @@ export default function AppShell({ children, manifest }: Props) {
   const [collapsed, setCollapsed] = useState(false);
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(false);
+  const [themeReady, setThemeReady] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
@@ -32,9 +33,36 @@ export default function AppShell({ children, manifest }: Props) {
     router.refresh();
   }
 
+  // Remember only the visual preference, never authentication or profile data.
+  // Apply it after hydration to avoid server/client markup mismatches.
   useEffect(() => {
+    let preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    try {
+      const saved = window.localStorage.getItem("smartstay-theme");
+      if (saved === "dark" || saved === "light") preference = saved === "dark";
+    } catch { /* Theme still works if browser storage is unavailable. */ }
+    setDark(preference);
+    setThemeReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!themeReady) return;
     document.documentElement.dataset.theme = dark ? "dark" : "light";
-  }, [dark]);
+    try {
+      window.localStorage.setItem("smartstay-theme", dark ? "dark" : "light");
+    } catch { /* A blocked localStorage should not prevent theme switching. */ }
+  }, [dark, themeReady]);
+
+  useEffect(() => {
+    const sync = (event: StorageEvent) => {
+      if (event.key === "smartstay-theme" &&
+          (event.newValue === "dark" || event.newValue === "light")) {
+        setDark(event.newValue === "dark");
+      }
+    };
+    window.addEventListener("storage", sync);
+    return () => window.removeEventListener("storage", sync);
+  }, []);
 
   // Keyboard users should not be trapped behind a mobile navigation drawer.
   // When opened, focus enters the drawer; Escape closes it and Tab stays inside.
