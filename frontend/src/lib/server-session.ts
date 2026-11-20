@@ -6,7 +6,7 @@ export const COOKIE_NAME = process.env.NODE_ENV === "production"
   : "smartstay_access";
 
 export const backendOrigin = process.env.API_BASE_URL ?? "http://localhost:8080";
-const iconKeys = new Set(["home", "rooms", "search", "rules"]);
+const iconKeys = new Set(["home", "rooms", "search", "rules", "calendar", "plus"]);
 
 export async function accessToken(): Promise<string | undefined> {
   return (await cookies()).get(COOKIE_NAME)?.value;

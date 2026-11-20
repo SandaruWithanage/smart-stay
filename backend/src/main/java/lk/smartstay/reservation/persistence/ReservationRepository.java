@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lk.smartstay.reservation.domain.ReservationStatus;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -35,5 +36,20 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
 
     @Query("select b from ReservationEntity b where b.checkIn = :checkIn order by b.id")
     List<ReservationEntity> findByCheckInDate(@Param("checkIn") LocalDate checkIn);
+
     List<ReservationEntity> findByGuest_FullNameContainingIgnoreCase(String name);
+
+    @Query("""
+      select b from ReservationEntity b
+      join fetch b.guest join fetch b.room
+      where b.guest.id = :guestId order by b.createdAt desc
+      """)
+    List<ReservationEntity> recentForGuest(@Param("guestId") UUID guestId, Pageable page);
+
+    @Query("""
+      select b from ReservationEntity b
+      join fetch b.guest join fetch b.room
+      order by b.createdAt desc
+      """)
+    List<ReservationEntity> recentForDesk(Pageable page);
 }

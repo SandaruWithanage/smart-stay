@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,6 +31,12 @@ public class GuestController {
     public GuestView register(@Valid @RequestBody GuestRegistrationRequest request, Authentication auth) {
         authz.require(auth, "guest.create");
         return service.register(request);
+    }
+
+    @GetMapping
+    public GuestView findByDocument(@RequestParam String documentNumber, Authentication auth) {
+        authz.require(auth, "guest.read.any");
+        return service.findDocument(documentNumber);
     }
 
     @GetMapping("/{id}")

@@ -1,54 +1,34 @@
-# Development status — booking persistence milestone
+# SmartStay implementation status — Stitch workflows
 
-## Delivered in foundation PR #1
+## Completed and merged previously
+- Spring Boot modular monolith, JPA/Flyway PostgreSQL, booking and billing algorithms.
+- Guest JWT sign-in, PostgreSQL RBAC/ABAC ownership checks, dynamic navigation manifest.
+- Aqua Frost glassmorphism frontend, private workspace and admin permission editor.
 
-- [x] Monorepo, Spring Boot 4.1.2, Next.js Aqua Frost, PostgreSQL/Flyway, core Java pricing/date algorithms.
-- [x] Read-only package catalog, preview-only permission-filtered navigation, CI.
+## Implemented in current feature branch
+- [x] Flyway V5 navigation links to room inventory, reservation ledger, desk booking and own reservation history.
+- [x] Server-side ownership-filtered `/api/me/reservations` and bounded staff `/api/admin/reservations`.
+- [x] Shared UI primitives for panels, headings, metrics, filters, fields, badges and data tables.
+- [x] Staff room inventory screen (create/edit/retire) using existing protected APIs.
+- [x] Staff booking ledger with booking search and cancellation.
+- [x] Desk reservation form for existing or new guest records, with explicit manual advance receipt confirmation.
+- [x] Guest own reservation history (record IDs resolved by authenticated user; no user-supplied guest ID).
+- [x] A4-friendly itemized invoice print view.
+- [x] Light Aqua Frost and dark Spatial Glass operational theme tokens.
+- [x] Integration test for guest-vs-desk reservation list scoping.
+- [x] UX source-to-implementation mapping and common-component inventory.
 
-## New in stacked milestone PR #2
+## Still pending
+- [ ] Verified guest self-booking/payment confirmation workflow (cannot fabricate advance receipt).
+- [ ] Secure verified linking of pre-existing desk guest records to a newly registered login.
+- [ ] Browser E2E testing across responsive screens, accessibility and print layout.
+- [ ] Complete password recovery, email verification, MFA, rate limiting and audit-event persistence.
+- [ ] Real checkout/folio settlement and housekeeping (out of coursework scope).
+- [ ] Lecturer confirmations: room capacity, extra guest billing, 48h cutoff, check-in time, tax treatment and refund workflow.
+- [ ] Final submitted UML class diagram (student-ID-prefixed), source listings and executed test report.
 
-- [x] JPA entities/repositories for guests, rooms, packages, reservations, invoices.
-- [x] Flyway V2 invoice snapshots and explicit cancellation refund obligation.
-- [x] Transactional room management, guest registration and booking service operations.
-- [x] Row-level room locking plus database overlap exclusion constraint.
-- [x] Public read-only date/type room-availability API.
-- [x] Protected routes for guest records, room CRUD, reservation search/cancel and invoices.
-- [x] Cached reference package catalog served from database rather than hardcoded values.
-- [x] PostgreSQL integration tests for booking lifecycle and financial snapshots.
-- [x] Privileged routes intentionally remain denied until real JWT and ABAC are added.
+## Important operational notes
 
-## Not yet implemented
+Admin must create room records first. Initial database has **no invented room inventory**; package catalog is seeded only. To see an existing guest's reservation in their private login, desk staff must use that user's linked guest ID. A separately registered desk guest has no automatic login linking yet.
 
-- [ ] JWT login/refresh, registration ownership, DB-driven RBAC/ABAC, audit and session invalidation.
-- [ ] Authenticated and accessible privileged REST operations (currently denied by design).
-- [ ] Authenticated frontend guest registration, booking/cancellation and admin room forms.
-- [ ] Real payment capture or refund transfer (not claimed).
-- [ ] Full coursework executed test report, lecturer-approved assumptions and ID-prefixed UML.
-
-## Next phase
-
-Implement JWT authentication and database-managed roles/permissions with resource ownership before exposing sensitive endpoints. Then connect front-end workflows, add security tests and admin navigation configuration. The original coursework remains the priority; do not expand into unrelated hotel features.
-
-## Current assumptions
-
-Read `docs/ASSUMPTIONS.md`. All timing, extra-guest billing and tax interpretations remain provisional.
-
-## New in stacked PR #3
-
-- [x] PostgreSQL identity accounts, roles, permission grants, allowlisted navigation metadata and configuration revision.
-- [x] Guest login/register with BCrypt + short-lived signed JWT (15 min).
-- [x] JWT issuer/audience/token-version validation and immediate DB grant re-evaluation.
-- [x] Server-enforced guest and reservation ownership checks, admin role grants and navigation editor APIs.
-- [x] Aqua Frost login/register, private workspace, dynamic sidebar and admin access-control interface.
-- [x] Next.js same-origin BFF session handlers storing JWT only in HttpOnly SameSite cookies.
-- [x] PostgreSQL-backed HTTP security tests for unauthenticated, forbidden, cross-guest and revoked sessions.
-
-## Remaining priorities after PR #3
-
-- [ ] Booking creation and invoice viewing UX for authenticated guests and hotel administrators.
-- [ ] Guest self-booking pending/payment-confirmation workflow without fake advance capture.
-- [ ] Real admin room CRUD screens, complete booking and cancellation flows.
-- [ ] CI browser E2E coverage, audit logs, MFA, password reset and rate limiting.
-- [ ] University-approved assumptions and final UML, code listing and test report.
-
-**Security limitation:** This coursework implementation must not be publicly exposed before anti-abuse and operational hardening.
+This is coursework-local development, not ready for public Internet hosting. See `docs/SECURITY-SETUP.md` and `docs/UX-STITCH-REFERENCE.md`.

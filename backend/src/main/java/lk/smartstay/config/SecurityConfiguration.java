@@ -31,6 +31,8 @@ public class SecurityConfiguration {
                 .requestMatchers("/api/guests", "/api/guests/**").authenticated()
                 .requestMatchers("/api/admin/rooms", "/api/admin/rooms/**").authenticated()
                 .requestMatchers("/api/admin/access/**").authenticated()
+                .requestMatchers("/api/admin/reservations").authenticated()
+                .requestMatchers("/api/me/reservations").authenticated()
                 .requestMatchers("/api/reservations", "/api/reservations/**").authenticated()
                 .anyRequest().denyAll())
             .oauth2ResourceServer(oauth -> oauth
