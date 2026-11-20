@@ -1,5 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { captureUiEvidence } from "./helpers/evidence";
+import { mkdirSync } from "node:fs";
+import { join } from "node:path";
 
 test("real guest request -> staff approval -> confirmed invoice", async ({ page }, info) => {
   test.skip(info.project.name === "mobile-chromium", "Full transaction is covered on desktop; mobile layout uses smoke checks.");
@@ -96,4 +98,40 @@ test("real guest request -> staff approval -> confirmed invoice", async ({ page 
 
   await page.emulateMedia({media:"print"});
   await expect(page.locator(".ss-invoice-paper")).toBeVisible();
+  await expect(page.locator(".sidebar")).toBeHidden();
+  await expect(page.getByRole("button", {name:"Print / Save PDF"})).toBeHidden();
+  const printBounds = await page.locator(".ss-invoice-paper").evaluate(el => {
+    const bounds = el.getBoundingClientRect();
+    const chargeRows = [...el.querySelectorAll(".ss-bill-row, .ss-bill-total")];
+    return {
+      right: bounds.right,
+      viewportWidth: document.documentElement.clientWidth,
+      clippedRows: chargeRows.filter(row => row.getBoundingClientRect().right > bounds.right + 2).length
+    };
+  });
+  expect(printBounds.clippedRows).toBe(0);
+  expect(printBounds.right).toBeLessThanOrEqual(printBounds.viewportWidth + 2);
+  await captureUiEvidence(page, "15-invoice-print-media", info);
+
+  // A real printable A4 PDF is generated and attached as coursework evidence.
+  const folder=join(process.cwd(), "test-results", "evidence");
+  mkdirSync(folder, {recursive:true});
+  const printed = await page.pdf({
+    path: join(folder, "16-invoice-A4.pdf"),
+    format:"A4",
+    printBackground:true,
+    preferCSSPageSize:true
+  });
+  expect(printed.subarray(0,8).toString()).toContain("%PDF-");
+  expect(printed.length).toBeGreaterThan(2000);
+
+  // Resize a representative authenticated screen; tables should scroll inside
+  // their container without causing entire-document horizontal overflow.
+  await page.emulateMedia({media:"screen"});
+  await page.setViewportSize({width:390,height:844});
+  await page.goto("/my/reservations");
+  const overflow = await page.evaluate(() =>
+    Math.max(document.body.scrollWidth,document.documentElement.scrollWidth) -
+    document.documentElement.clientWidth);
+  expect(overflow, "Guest reservations must fit mobile width").toBeLessThanOrEqual(2);
 });

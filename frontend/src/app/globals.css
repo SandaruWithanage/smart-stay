@@ -453,3 +453,21 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--deep); outline-
 .ss-request-stay-header {display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .ss-request-table {margin:18px 0}
 @media(max-width:640px){.ss-request-form .ss-two-column{grid-template-columns:1fr}}
+
+/* Keyboard and screen-reader navigation: visually hidden until keyboard focus. */
+.ss-skip-link {
+  position:fixed;z-index:100;top:10px;left:12px;
+  padding:11px 17px;background:var(--ss-paper, #fff);color:var(--ink);
+  border:2px solid var(--deep);border-radius:10px;
+  font-size:14px;font-weight:800;transform:translateY(-170%);
+}
+.ss-skip-link:focus {transform:translateY(0)}
+:where(input,select,textarea,summary):focus-visible {
+  outline:3px solid var(--deep);
+  outline-offset:2px;
+}
+@media(max-width:930px) {
+  .sidebar:not(.sidebar-open) {visibility:hidden;pointer-events:none}
+  .sidebar.sidebar-open {visibility:visible;pointer-events:auto}
+}
+@media print {.ss-skip-link {display:none!important}}
