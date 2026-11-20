@@ -19,7 +19,7 @@ test("public catalog, accessible navigation and glassmorphism theme", async ({ p
     await page.getByRole("button", { name: "Open menu" }).click();
     await expect(page.getByRole("navigation")).toBeVisible();
     await captureUiEvidence(page, "03-mobile-navigation", info);
-    await page.getByRole("button", { name: "Close menu" }).last().click();
+    await page.getByRole("button", { name: "Close menu", exact: true }).last().click();
   }
   await page.goto("/availability");
   await expect(page.getByRole("heading", { name: /Find your next/i })).toBeVisible();
@@ -56,11 +56,11 @@ test("keyboard skip link and mobile drawer focus return", async ({ page }, info)
     await expect(opener).toHaveAttribute("aria-expanded", "true");
     const drawer = page.getByRole("dialog", { name: "Main navigation" });
     await expect(drawer).toBeVisible();
-    await expect(page.getByRole("button", { name: "Close menu" })).toBeFocused();
+    await expect(page.getByRole("button", { name: "Close menu", exact: true })).toBeFocused();
     await page.keyboard.press("Shift+Tab");
     await expect(drawer.locator("a").last()).toBeFocused();
     await page.keyboard.press("Tab");
-    await expect(page.getByRole("button", { name: "Close menu" })).toBeFocused();
+    await expect(page.getByRole("button", { name: "Close menu", exact: true })).toBeFocused();
     await page.keyboard.press("Escape");
     await expect(opener).toHaveAttribute("aria-expanded", "false");
     await expect(opener).toBeFocused();
