@@ -64,3 +64,15 @@ Remain: public-deployment hardening, payment gateway, lecturer decision approval
 - [x] Shared reusable React modification form and staff/guest edit links.
 - [x] Java domain, persistence and HTTP coverage for cutoff, money, conflicts and ownership.
 - [ ] Lecturer confirmation of editable scope, time and refund treatment.
+
+## Milestone 8 — Assessment deliverables (report preparation)
+
+- [x] UML class-diagram source with domain/service associations and explicit Kingston student-ID placeholder.
+- [x] OOP/data-structure/algorithm design rationale tied to the implemented Java code.
+- [x] Test case matrix linked to actual JUnit/Playwright test names and verified CI evidence.
+- [x] Mandatory hand-in checklist and real UI screenshot capture plan.
+- [x] Windows Git-tracked source ZIP and source-code appendix export scripts.
+- [ ] Insert exact student ID into every UML class name and export readable image.
+- [ ] Capture and review genuine UI/code screenshots.
+- [ ] Integrate diagram, listings and observed test evidence in the final single report.
+- [ ] Confirm final moderated brief, due date, academic integrity statement and lecturer assumptions.

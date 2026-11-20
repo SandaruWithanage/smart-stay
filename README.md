@@ -100,7 +100,7 @@ See `docs/RESERVATION-AMENDMENTS.md`. Assumption O-07 still needs lecturer confi
 | GET/POST | `/api/reservations` | JWT + current permission and ownership requirements |
 | GET/POST | `/api/reservations/{id}/invoice`, `/{id}/cancel` | JWT + owner or administrator permission |
 
-Public catalog and room availability remain anonymously readable; authenticated operations now enforce the current database grants and resource ownership. Guest booking **history** is now available; independent guest self-booking remains pending a safe advance-collection workflow.
+Public catalog and room availability remain anonymously readable; authenticated operations now enforce the current database grants and resource ownership. Guest booking **requests** and history are now supported through staff approval; an online payment gateway is not integrated and no pending request is a confirmed reservation.
 
 **Money handling:** Creation requires staff confirmation of a manually received LKR 10,000 advance, but no actual payment gateway exists. Cancellation records the refundable advance as PENDING and voids the invoice; no refund transfer occurs.
 
@@ -112,3 +112,15 @@ The university brief is marked draft. Room capacity, 48h vs two-calendar-day int
 `POST /api/booking-requests/{id}/withdraw`, and administrator
 `GET /api/admin/booking-requests`,
 `POST /api/admin/booking-requests/{id}/approve` or `/reject`.
+
+## Coursework hand-in resources
+
+The source code is **not** the entire CI6115 coursework submission. The draft brief also requires a student-ID-prefixed class diagram, OOP discussion, a report with source listings and test cases, clear actual screenshots, and a separate source ZIP.
+
+- [Class diagram and OOP rationale](docs/COURSEWORK-CLASS-DIAGRAM.md) — replace **every `KINGSTON_ID_` placeholder** before submission.
+- [Requirement-to-implementation mapping](docs/COURSEWORK-TRACEABILITY.md)
+- [Test case matrix and execution evidence](docs/COURSEWORK-TEST-CASE-MATRIX.md)
+- [Final submission checklist](docs/COURSEWORK-SUBMISSION-CHECKLIST.md)
+- [Export instructions](docs/COURSEWORK-EXPORT-GUIDE.md)
+
+On Windows PowerShell, run `scripts/Export-Code-Listings.ps1` and `scripts/Create-Submission-Zip.ps1` using instructions in the export guide. They create a generated source appendix and a clean Git-tracked source archive, not a final signed assignment report.
