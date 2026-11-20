@@ -46,7 +46,7 @@ export default function AppShell({ children, manifest }: Props) {
         <nav className="nav-list">
           {navigation.map((item) => (
             <Link key={item.id} href={routeRegistry[item.routeKey]}
-                  className={`nav-item ${routeRegistry[item.routeKey].split("#")[0] === pathname ? "nav-item-active" : ""}`}
+                  className={`nav-item ${routeRegistry[item.routeKey].split("#")[0] === pathname ? "nav-item-active" : ""}`} aria-current={routeRegistry[item.routeKey].split("#")[0] === pathname ? "page" : undefined}
                   onClick={() => setOpen(false)}>
               <NavigationIcon item={item} />
               {!collapsed && <span>{item.label}</span>}
@@ -83,7 +83,7 @@ export default function AppShell({ children, manifest }: Props) {
           </div>
         </header>
         <main id="main-content" className="main-content">{children}</main>
-        <footer className="footer">SmartStay · Coursework implementation preview · Aqua Frost</footer>
+        <footer className="footer">SmartStay · Hotel booking coursework · Aqua Frost / Spatial Glass</footer>
       </div>
     </div>
   );

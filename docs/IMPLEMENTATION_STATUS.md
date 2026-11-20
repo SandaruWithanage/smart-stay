@@ -45,3 +45,12 @@ This is coursework-local development, not ready for public Internet hosting. See
 - [x] Integration tests for cross-guest access, duplicate approval and request decisions.
 
 Remain: public-deployment hardening, payment gateway, lecturer decision approvals, browser E2E and the final graded UML/report.
+
+## Milestone 6 — UI consistency and browser E2E
+
+- [x] Public catalog/availability shell renders authenticated navigation when signed in.
+- [x] Stale “authentication coming soon” copy replaced with actual implemented features.
+- [x] Playwright desktop/mobile browser checks added to CI.
+- [x] Real PostgreSQL-backed guest-to-staff booking-request and invoice journey tested in Chromium.
+- [x] A4 print-media invoice visibility is exercised.
+- [ ] Additional manual accessibility and visual-regression checks.

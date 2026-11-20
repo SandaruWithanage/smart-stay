@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isSameOriginRequest } from "@/lib/request-origin";
 import { backendOrigin, COOKIE_NAME } from "@/lib/server-session";
 
 export async function POST(request: NextRequest) {
   // Login through this first-party BFF so access tokens are never exposed to client JS.
-  if (request.headers.get("origin") !== request.nextUrl.origin) {
+  if (!isSameOriginRequest(request)) {
     return NextResponse.json({ error: "Invalid request origin" }, { status: 403 });
   }
   const body = await request.json().catch(() => null);
